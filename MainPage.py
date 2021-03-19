@@ -1,3 +1,4 @@
+# Imports
 import dash
 import dash_bootstrap_components as dbc
 import dash_core_components as dcc
@@ -7,20 +8,25 @@ from dash.dependencies import Input, Output
 import pandas as pd
 import plotly.graph_objects as go
 
-# rem means relative font size.
+# Notes
+    # rem means relative font size.
+
+# Mainpage Div
 class MainPage:
 
-    colors = {'background': '#202530',
-              'text': '#ffffff'}
+    streamcloud_logo = './assets/streamcloud_logo.png'
     data = pd.read_csv('./data/tv_shows.csv')
     data2 = data.groupby(data['Age'], as_index=False).size()
     ageGroup = data['Age'].tolist()
     dropDownDict = []
     i = 0
 
+    colors = {'background': '#202530', 'navigation': '#272D3F',
+              'text': '#ffffff'}
+
     sidebar_style = {
         "position": "fixed",
-        "top": 0,
+        "top": 56,
         "left": 0,
         "bottom": 0,
         "width": "16rem",
@@ -41,6 +47,32 @@ class MainPage:
         # print(ageGroup)
         # print(data)
 
+        search_bar = dbc.Row([
+                dbc.Col(dbc.Input(type="search", placeholder="Search...")),
+            ],
+            no_gutters=True,
+            className="ml-auto flex-nowrap mt-3 mt-md-0",
+            align="center",
+            )
+
+        self.navbar = html.Div([
+            dbc.Navbar(
+                [
+                    html.A(
+                        dbc.Row([
+                            dbc.Col(html.Img(src='./assets/streamcloud_logo.png',height="40px")),
+                        ],
+                        align="center",
+                        no_gutters=True
+                        ),
+                    ),
+                    dbc.NavbarToggler(id="navbar-toggler"),
+                    dbc.Collapse(search_bar, id="navbar-collapse", navbar=True)
+                ],
+                color='#272D3F',
+
+            )])
+        
         self.sidebar = html.Div([
             dbc.Nav([
                 dbc.NavLink("Home", href="/", active="exact"),
@@ -91,8 +123,7 @@ class MainPage:
         ])
         self.app = dash.Dash(external_stylesheets=[dbc.themes.BOOTSTRAP])
         self.app.callback(Output("main-page", "children"), [Input("url", "pathname")])(self.renderPage)
-        self.app.layout = html.Div([dcc.Location(id="url"), self.sidebar, self.mainHome])
-
+        self.app.layout = html.Div([dcc.Location(id="url"), self.navbar, self.sidebar, self.mainHome])
 
     # @app.callback(
     #     dash.dependencies.Output('Avg-age-group', 'figure'),
@@ -104,7 +135,6 @@ class MainPage:
 
     def runPage(self):
         self.app.run_server(debug=True)
-
 
     def renderPage(self, pathname):
         if pathname == "/":
