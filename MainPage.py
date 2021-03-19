@@ -8,12 +8,12 @@ from dash.dependencies import Input, Output
 import pandas as pd
 import plotly.graph_objects as go
 
+
 # Notes
-    # rem means relative font size.
+# rem means relative font size.
 
 # Mainpage Div
 class MainPage:
-
     streamcloud_logo = './assets/streamcloud_logo.png'
     data = pd.read_csv('./data/tv_shows.csv')
     data2 = data.groupby(data['Age'], as_index=False).size()
@@ -22,7 +22,7 @@ class MainPage:
     i = 0
 
     colors = {'background': '#202530', 'navigation': '#272D3F',
-              'text': '#ffffff'}
+              'text': '#ffffff', "lightText": "#ABD6FE"}
 
     sidebar_style = {
         "position": "fixed",
@@ -48,22 +48,22 @@ class MainPage:
         # print(data)
 
         search_bar = dbc.Row([
-                dbc.Col(dbc.Input(type="search", placeholder="Search...")),
-            ],
+            dbc.Col(dbc.Input(type="search", placeholder="Search...")),
+        ],
             no_gutters=True,
             className="ml-auto flex-nowrap mt-3 mt-md-0",
             align="center",
-            )
+        )
 
         self.navbar = html.Div([
             dbc.Navbar(
                 [
                     html.A(
                         dbc.Row([
-                            dbc.Col(html.Img(src='./assets/streamcloud_logo.png',height="40px")),
+                            dbc.Col(html.Img(src='./assets/streamcloud_logo.png', height="40px")),
                         ],
-                        align="center",
-                        no_gutters=True
+                            align="center",
+                            no_gutters=True
                         ),
                     ),
                     dbc.NavbarToggler(id="navbar-toggler"),
@@ -72,14 +72,40 @@ class MainPage:
                 color='#272D3F',
 
             )])
-        
+
         self.sidebar = html.Div([
             dbc.Nav([
-                dbc.NavLink("Home", href="/", active="exact"),
-                dbc.NavLink("Analytics", href="/Analytics", active="exact")
+                dbc.NavLink("Home", href="/", active="exact",
+                            style={"font-family": "Roboto", "font-size": "16px"}),
+                dbc.NavLink("Analytics", href="/Analytics", active="exact",
+                            style={"font-family": "Roboto", "font-size": "16px"})
             ],
                 vertical=True,
                 pills=True
+            ),
+            html.Hr(style={"border-top": "2px solid", "color": "#3B495F"}),
+            html.H1("Filters", style={"color": self.colors["lightText"], "font-family": "Roboto", "font-size": "24px"}),
+            dcc.Dropdown(options=[
+                {'label': 'Netflix', 'value': 'net'},
+                {'label': 'Prime Video', 'value': 'pv'},
+                {'label': 'Hulu', 'value': 'hul'},
+                {'label': 'Disney+', 'value': 'dis'}
+            ],
+                placeholder="Select a platform",
+                style={"padding-bottom": "10px", "font-family": "Roboto", "font-size": "20px",
+                       "color": self.colors["lightText"],
+                       "background-color": "#3B495F"}
+            ),
+            dcc.Dropdown(options=[
+                {'label': 'Action', 'value': 'act'},
+                {'label': 'Adventure', 'value': 'adv'},
+                {'label': 'Thriller', 'value': 'Thr'}
+            ],
+                multi=True,
+                placeholder="Select a genre",
+                style={"padding-bottom": "10px", "font-family": "Roboto", "font-size": "20px",
+                       "color": self.colors["lightText"],
+                       "background-color": "#3B495F"}
             )],
             style=self.sidebar_style
         )
