@@ -164,7 +164,7 @@ class MainPage:
 
     def renderPage(self, pathname):
         if pathname == "/":
-            return self.mainHome
+            return self.mainHome.children
         elif pathname == "/Analytics":
             return html.P("YOU THOUGHT THIS WAS ANALYTICS, IT WAS I CYBER DIO!!!!!!", style={"color": 'white'})
         return dbc.Jumbotron([
