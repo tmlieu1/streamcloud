@@ -29,16 +29,16 @@ streamcloud_logo = './assets/streamcloud_logo.png'
 
 # Colors and Styles
 colors = {'background': '#202530', 'navigation': '#272D3F',
-    'text': '#ffffff', "lightText": "#ABD6FE"}
+    'text': '#ffffff', "lightText": "#ABD6FE", "lightblueText": "#7196bb"}
 
-navbar_style = {
+navbarStyle = {
 	"position": "sticky",
 	"zIndex": 1000, 
 	"background-color": "#272D3F",
 	"box-shadow": "2px 8px 8px 1px rgba(25, 25, 25, 0.8)"
 }
 
-sidebar_style = {
+sidebarStyle = {
 	"position": "fixed",
 	"zIndex": 900,
 	"top": 56,
@@ -49,7 +49,7 @@ sidebar_style = {
 	"background-color": "#272D3F",
 }
 
-dropdown_style = { 
+dropdownStyle = { 
 	"font-family": "Roboto", 
 	"font-size": "20px",
     "font-weight": "bold",
@@ -61,19 +61,30 @@ mainHomeStyle = {
 	"zIndex": 100,
 	"left": 60,
 	"margin-left": "10rem",
-	"margin-right": "3rem",
+	"margin-right": "4rem",
 	"padding": "2rem 1rem",
 	"background-color": "#202530",
 }
 
-search_bar = dbc.Row([
-	dbc.Col(dbc.Input(type="search", placeholder="Search...")),
+searchbarStyle = {
+    "font-family": "Roboto",
+    "font-size": "16px",
+    "fontColor": "#7196bb",
+    "border": "1.5px #202530",
+    "border-radius": "10px",
+    "height": "40px",
+    "outline": 0,
+    "background-color": "#3b495f",
+}
+
+searchbar = dbc.Row([
+	dbc.Col(dbc.Input(type="search", placeholder="Search...", style=searchbarStyle)),
 ],
 	align="center",
 )
 
 # Div Elements
-def build_navbar():
+def buildNavbar():
 	return html.Div([
             dbc.Navbar(
                 [
@@ -81,17 +92,17 @@ def build_navbar():
 						dbc.Col(html.Img(src='./assets/streamcloud_logo.png', height="30px"),
 							style={"padding-right": "30px"}),
 						dbc.NavbarToggler(id="navbar-toggler"),
-						dbc.Collapse(search_bar, id="navbar-collapse", navbar=True)
+						dbc.Collapse(searchbar, id="navbar-collapse", navbar=True)
 					],
 						align="center"
 					),
                 ],
                 color='#272D3F'
             )],
-			style = navbar_style
+			style = navbarStyle
 		)
 
-def build_sidebar():
+def buildSidebar():
 	return html.Div([
             dbc.Nav([
                 dbc.NavLink("Home", href="/", active="exact", 
@@ -111,7 +122,7 @@ def build_sidebar():
                 {'label': 'Disney+', 'value': 'dis'}
             ],
                 placeholder="Select a platform",
-				style = dropdown_style
+				style = dropdownStyle
             ),
 			html.Span(style={"position": "relative", "padding": "1px"}),
             dcc.Dropdown(options=[
@@ -121,12 +132,12 @@ def build_sidebar():
             ],
                 multi=True,
                 placeholder="Select a genre",
-				style = dropdown_style
+				style = dropdownStyle
             )],
-			style = sidebar_style
+			style = sidebarStyle
 		)
 
-def build_home():
+def buildHome():
 	return html.Div(id="main-page", style=mainHomeStyle, children=[
             html.H1(
                 'Hello General Kenobi',
@@ -166,7 +177,7 @@ def build_home():
 )
 def renderPage(pathname):
         if pathname == "/":
-            return build_home.children
+            return buildHome.children
         elif pathname == "/Analytics":
             return html.P("YOU THOUGHT THIS WAS ANALYTICS, IT WAS I CYBER DIO!!!!!!", style={"color": 'white'})
         return dbc.Jumbotron([
@@ -179,9 +190,9 @@ def renderPage(pathname):
 app.layout = html.Div(
 	id="page-content",
 	children=[
-		build_navbar(),
-		build_sidebar(),
-		build_home()
+		buildNavbar(),
+		buildSidebar(),
+		buildHome()
 	],
 )
 

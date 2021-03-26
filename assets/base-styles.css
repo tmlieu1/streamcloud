@@ -2050,27 +2050,27 @@ pre code {
 }
 
 .form-control::-webkit-input-placeholder {
-  color: #919aa1;
+  color: #7196bb;
   opacity: 1;
 }
 
 .form-control::-moz-placeholder {
-  color: #919aa1;
+  color: #7196bb;
   opacity: 1;
 }
 
 .form-control:-ms-input-placeholder {
-  color: #919aa1;
+  color: #7196bb;
   opacity: 1;
 }
 
 .form-control::-ms-input-placeholder {
-  color: #919aa1;
+  color: #7196bb;
   opacity: 1;
 }
 
 .form-control::placeholder {
-  color: #919aa1;
+  color: #7196bb;
   opacity: 1;
 }
 
@@ -2089,7 +2089,7 @@ input[type="month"].form-control {
 }
 
 select.form-control:focus::-ms-value {
-  color: #55595c;
+  color: #7196bb;
   background-color: #f7f7f9;
 }
 
@@ -3850,7 +3850,7 @@ input[type="button"].btn-block {
   font-size: 0.875rem;
   font-weight: 400;
   line-height: 1.5;
-  color: #55595c;
+  color: #7196bb;
   vertical-align: middle;
   background: #f7f7f9 url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='4' height='5' viewBox='0 0 4 5'%3e%3cpath fill='%23343a40' d='M2 0L0 2h4zm0 5L0 3h4z'/%3e%3c/svg%3e") right 1.5rem center/8px 10px no-repeat;
   border: 0 solid #ced4da;
@@ -3861,13 +3861,13 @@ input[type="button"].btn-block {
 }
 
 .custom-select:focus {
-  border-color: #5a5a5a;
+  border-color: #7196bb;
   outline: 0;
   box-shadow: 0 0 0 0.2rem rgba(26, 26, 26, 0.25);
 }
 
 .custom-select:focus::-ms-value {
-  color: #55595c;
+  color: #7196bb;
   background-color: #f7f7f9;
 }
 
@@ -10178,4 +10178,9 @@ th {
 
 .card-title, .card-header {
   color: inherit;
+}
+
+::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+  color: blue;
+  opacity: 1; /* Firefox */
 }
