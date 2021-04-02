@@ -69,7 +69,6 @@ mainHomeStyle = {
 searchbarStyle = {
     "font-family": "Roboto",
     "font-size": "16px",
-    "fontColor": "#7196bb",
     "border": "1.5px #202530",
     "border-radius": "10px",
     "height": "40px",
@@ -172,14 +171,22 @@ def buildHome():
 
 # Callbacks
 @app.callback(
-	Output("page-content", "children"), 
+	Output("main-page", "children"), 
 	Input("url", "pathname")
 )
-def renderPage(pathname):
+def displayPage(pathname):
         if pathname == "/":
-            return buildHome.children
+            return buildHome().children
         elif pathname == "/Analytics":
-            return html.P("YOU THOUGHT THIS WAS ANALYTICS, IT WAS I CYBER DIO!!!!!!", style={"color": 'white'})
+            return html.P("YOU THOUGHT THIS WAS ANALYTICS, IT WAS I CYBER DIO!!!!!!", 
+            style={
+                "color": 'white',
+                "left": 50,
+                "margin-left": "4rem",
+                "margin-right": "3rem",	
+                "font-family": "Roboto", 
+                "font-size": "20px",
+                "font-weight": "bold",})
         return dbc.Jumbotron([
             html.H1("404: Not found", className="text-danger"),
             html.Hr,
@@ -188,14 +195,13 @@ def renderPage(pathname):
 		
 # App Layout and Execution
 app.layout = html.Div(
-	id="page-content",
 	children=[
+        dcc.Location(id="url"),
 		buildNavbar(),
 		buildSidebar(),
 		buildHome()
 	],
 )
-
 
 if __name__ == "__main__":
 	app.run_server(debug=True)
