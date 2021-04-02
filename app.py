@@ -49,11 +49,18 @@ sidebarStyle = {
 	"background-color": "#272D3F",
 }
 
+sidebarLinkStyle = {
+    "color": colors["lightText"], 
+    "font-family": "Roboto", 
+    "font-size": "24px",
+    "font-weight": "normal"
+}
+
 dropdownStyle = { 
 	"font-family": "Roboto", 
 	"font-size": "20px",
     "font-weight": "bold",
-    "background-color": "#3b495f",
+    "background-color": "#3b495f"
 }
 
 mainHomeStyle = {
@@ -74,6 +81,38 @@ searchbarStyle = {
     "height": "40px",
     "outline": 0,
     "background-color": "#3b495f",
+    "color": "#7196bb"
+}
+
+tabsStyle = {
+    "font-family": "Roboto",
+    "font-size": "24px",
+    "font-weight": "normal",
+    "text-transform": "capitalize"
+}
+
+tabStyle = {
+    'width': 'inherit',
+    'border': 'none',
+    'paddingTop': 0,
+    'paddingBottom': 0,
+    'height': '40px',
+    "background": "#272D3F",
+    "color": colors["lightText"]
+}
+
+tabSelectedStyle = {
+    'width': 'inherit',
+    'boxShadow': 'none',
+    'borderLeft': 'none',
+    'borderRight': 'none',
+    'borderTop': 'none',
+    'borderBottom': '3px #ffffff solid',
+    'paddingTop': 0,
+    'paddingBottom': 0,
+    'height': '40px',
+    'background': '#272D3F',
+    "color": colors["lightText"]
 }
 
 searchbar = dbc.Row([
@@ -95,6 +134,23 @@ def buildNavbar():
 					],
 						align="center"
 					),
+                    html.Span(
+                        dcc.Tabs(id='streamcloud-tabs', value='movies', children=[
+                            dcc.Tab(
+                                label='Movies',
+                                value='movies',
+                                style=tabStyle,
+                                selected_style=tabSelectedStyle
+                            ),
+                            dcc.Tab(
+                                label='TV Shows',
+                                value='tvshows',
+                                style=tabStyle,
+                                selected_style=tabSelectedStyle
+                            )
+                        ],style=tabsStyle),
+                        className="ml-auto"
+                    )
                 ],
                 color='#272D3F'
             )],
@@ -105,32 +161,40 @@ def buildSidebar():
 	return html.Div([
             dbc.Nav([
                 dbc.NavLink("Home", href="/", active="exact", 
-                    style={"color": colors["lightText"], "font-family": "Roboto", "font-size": "24px"}),
+                    style=sidebarLinkStyle),
                 dbc.NavLink("Analytics", href="/Analytics", active="exact", 
-                    style={"color": colors["lightText"], "font-family": "Roboto", "font-size": "24px"})
+                    style=sidebarLinkStyle)
             ],
                 vertical=True,
                 pills=True
             ),
             html.Hr(style={"border-top": "2px solid", "color": "#3B495F"}),
-            html.H2("Filters", style={"color": colors["lightText"], "font-family": "Roboto", "font-size": "24px"}),
-            dcc.Dropdown(options=[
+            html.H2("Filters", 
+                style={"color": colors["lightText"], 
+                    "font-family": "Roboto", 
+                    "font-size": "24px",
+                    "text-transform": "capitalize"}),
+            dcc.Dropdown(
+                id="platform-filter",
+                options=[
                 {'label': 'Netflix', 'value': 'net'},
                 {'label': 'Prime Video', 'value': 'pv'},
                 {'label': 'Hulu', 'value': 'hul'},
                 {'label': 'Disney+', 'value': 'dis'}
             ],
-                placeholder="Select a platform",
+                placeholder= "Select a platform",
 				style = dropdownStyle
             ),
 			html.Span(style={"position": "relative", "padding": "1px"}),
-            dcc.Dropdown(options=[
+            dcc.Dropdown(
+                id="genre-filter",
+                options=[
                 {'label': 'Action', 'value': 'act'},
                 {'label': 'Adventure', 'value': 'adv'},
                 {'label': 'Thriller', 'value': 'Thr'}
             ],
                 multi=True,
-                placeholder="Select a genre",
+                placeholder= "Select a genre",
 				style = dropdownStyle
             )],
 			style = sidebarStyle
@@ -178,7 +242,22 @@ def displayPage(pathname):
         if pathname == "/":
             return buildHome().children
         elif pathname == "/Analytics":
-            return html.P("YOU THOUGHT THIS WAS ANALYTICS, IT WAS I CYBER DIO!!!!!!", 
+            return html.P([
+                "⠄⠄⠄⠄⠄⠄⢀⣠⣤⣶⣶⣶⣤⣄⠄⠄⢀⣠⣤⣤⣤⣤⣀⠄⠄⠄⠄⠄⠄⠄", html.Br(),
+                "⠄⠄⠄⠄⢠⣾⣿⣿⣿⣿⠿⠿⢿⣿⣿⡆⣿⣿⣿⣿⣿⣿⣿⣷⡄⠄⠄⠄⠄⠄", html.Br(),
+                "⠄⠄⠄⣴⣿⣿⡟⣩⣵⣶⣾⣿⣷⣶⣮⣅⢛⣫⣭⣭⣭⣭⣭⣭⣛⣂⠄⠄⠄⠄", html.Br(),
+                "⠄⠄⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣶⣭⠛⣿⣿⣿⣿⣿⣿⣿⣿⣦⡀⠄", html.Br(),
+                "⣠⡄⣿⣿⣿⣿⣿⣿⣿⠿⢟⣛⣫⣭⠉⠍⠉⣛⠿⡘⣿⠿⢟⣛⡛⠉⠙⠻⢿⡄", html.Br(),
+                "⣿⣿⣿⣿⣿⣿⣿⣿⣿⣶⣶⣶⣶⣶⣶⣶⣶⣭⣍⠄⣡⣬⣭⣭⣅⣈⣀⣉⣁⠄", html.Br(),
+                "⣿⣿⣿⣿⣿⣿⣿⣿⣶⣭⣛⡻⠿⠿⢿⣿⡿⢛⣥⣾⣿⣿⣿⣿⣿⣿⣿⠿⠋⠄", html.Br(),
+                "⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⠿⣩⣵⣾⣿⣿⣯⣙⠟⣋⣉⣩⣍⡁⠄⠄⠄", html.Br(),
+                "⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⣿⣿⣿⣿⣷⡄⠄⠄", html.Br(),
+                "⣿⣿⣿⣿⣿⣿⡿⢟⣛⣛⣛⣛⠿⠿⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⠿⡀⠄", html.Br(),
+                "⣿⣿⣿⣿⣿⡟⢼⣿⣯⣭⣛⣛⣛⡻⠷⠶⢶⣬⣭⣭⣭⡭⠭⢉⡄⠶⠾⠟⠁⠄", html.Br(),
+                "⣿⣿⣿⣿⣟⠻⣦⣤⣭⣭⣭⣭⣛⣛⡻⠿⠷⠶⢶⣶⠞⣼⡟⡸⣸⡸⠿⠄⠄⠄", html.Br(),
+                "⣛⠿⢿⣿⣿⣿⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠷⡆⣾⠟⡴⣱⢏⡜⠆⠄⠄⠄", html.Br(),
+                "⣭⣙⡒⠦⠭⣭⣛⣛⣛⡻⠿⠿⠟⣛⣛⣛⣛⡋⣶⡜⣟⣸⣠⡿⣸⠇⣧⡀⠄⠄", html.Br(),
+                "⣿⣿⣿⣿⣷⣶⣦⣭⣭⣭⣭⣭⣭⣥⣶⣶⣶⡆⣿⣾⣿⣿⣿⣷⣿⣸⠉⣷⠄⠄"], 
             style={
                 "color": 'white',
                 "left": 50,
@@ -186,7 +265,10 @@ def displayPage(pathname):
                 "margin-right": "3rem",	
                 "font-family": "Roboto", 
                 "font-size": "20px",
-                "font-weight": "bold",})
+                "font-weight": "bold",
+            })
+        elif pathname == "/tv":
+            return buildHome().children
         return dbc.Jumbotron([
             html.H1("404: Not found", className="text-danger"),
             html.Hr,
