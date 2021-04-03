@@ -5,14 +5,17 @@ import dash_core_components as dcc
 import dash_html_components as html
 from dash.dependencies import Input, Output
 import pandas as pd
+import TreeMaps as tm
+import dash_table as dt
 import plotly.graph_objects as go
+import TableData as td
 
 # Init
 app = dash.Dash(
-	__name__,
-	meta_tags=[
-		{"name": "viewport", "content": "width=device-width, initial-scale=1.0"}
-	],
+    __name__,
+    meta_tags=[
+        {"name": "viewport", "content": "width=device-width, initial-scale=1.0"}
+    ],
 )
 server = app.server
 
@@ -23,30 +26,33 @@ data2 = df_shows.groupby(df_shows['Age'], as_index=False).size()
 ageGroup = df_shows['Age'].tolist()
 dropDownDict = []
 i = 0
+treemaps = tm.TreeMapGraph(df_movies)
+table = td.TableData(df_movies)
 
 # Assets
 streamcloud_logo = './assets/streamcloud_logo.png'
 
 # Colors and Styles
 colors = {'background': '#202530', 'navigation': '#272D3F',
-    'text': '#ffffff', "lightText": "#ABD6FE", "lightblueText": "#7196bb"}
+          'text': '#ffffff', "lightText": "#ABD6FE", "lightblueText": "#7196bb"}
 
 navbarStyle = {
-	"position": "sticky",
-	"zIndex": 1000, 
-	"background-color": "#272D3F",
-	"box-shadow": "2px 8px 8px 1px rgba(25, 25, 25, 0.8)"
+    "position": "sticky",
+    "zIndex": 1000,
+    "background-color": "#272D3F",
+    "box-shadow": "2px 8px 8px 1px rgba(25, 25, 25, 0.8)"
 }
 
 sidebarStyle = {
-	"position": "fixed",
-	"zIndex": 900,
-	"top": 56,
-	"left": 0,
-	"bottom": 0,
-	"width": "16rem",
-	"padding": "2rem 1rem",
-	"background-color": "#272D3F",
+    "position": "fixed",
+    "zIndex": 900,
+    "top": 56,
+    "left": 0,
+    "bottom": 0,
+    "width": "16rem",
+    "padding": "2rem 1rem",
+    "background-color": "#272D3F",
+    'margin-bottom': '1px'
 }
 
 sidebarLinkStyle = {
@@ -64,13 +70,16 @@ dropdownStyle = {
 }
 
 mainHomeStyle = {
-	"position": "relative",     
-	"zIndex": 100,
-	"left": 60,
-	"margin-left": "10rem",
-	"margin-right": "4rem",
-	"padding": "2rem 1rem",
-	"background-color": "#202530",
+    "position": "relative",
+    "zIndex": 100,
+    "left": 60,
+    "margin-left": "10rem",
+    "margin-right": "4rem",
+    # "padding": "2rem 1rem, 0rem, 75rem",
+    'padding-left': '4rem',
+    'padding-top': '2rem',
+    'padding-right': '1rem',
+    "background-color": "#202530",
 }
 
 searchbarStyle = {
@@ -116,10 +125,11 @@ tabSelectedStyle = {
 }
 
 searchbar = dbc.Row([
-	dbc.Col(dbc.Input(type="search", placeholder="Search...", style=searchbarStyle)),
+    dbc.Col(dbc.Input(type="search", placeholder="Search...", style=searchbarStyle)),
 ],
-	align="center",
+    align="center",
 )
+
 
 # Div Elements
 def buildNavbar():
@@ -152,10 +162,14 @@ def buildNavbar():
                         className="ml-auto"
                     )
                 ],
-                color='#272D3F'
-            )],
-			style = navbarStyle
-		)
+                    align="center"
+                ),
+            ],
+            color='#272D3F'
+        )],
+        style=navbarStyle
+    )
+
 
 def buildSidebar():
 	return html.Div([
@@ -201,42 +215,45 @@ def buildSidebar():
 		)
 
 def buildHome():
-	return html.Div(id="main-page", style=mainHomeStyle, children=[
-            html.H1(
-                'Hello General Kenobi',
-                style={
-                    'textAlign': 'center',
-                    'color': colors['text']
-                }
-            ),
-            # Overview Text
-            html.Div(
-                'Dash: A weeb application framework for Pythoon.',
-                style={
-                    'textAlign': 'center',
-                    'color': colors['text']
-                }),
-            # Graph
-            dcc.Graph(
-                id='Avg-age-group',
-                figure={
-                    'data': [
-                        {'x': data2['Age'], 'y': data2['size'], 'type': 'bar', 'name': 'Count By groups'}],
-                    'layout': {
-                        'plot_bgcolor': colors['background'],
-                        'paper_bgcolor': colors['background'],
-                        'font': {
-                            'color': colors['text']
-                        }
-                    }
-                }
-            )
-        ])
+    return html.Div(id="main-page", style=mainHomeStyle, children=[
+        html.H1(
+            'Hello General Kenobi',
+            style={
+                'textAlign': 'center',
+                'color': colors['text']
+            }
+        ),
+        # Overview Text
+        html.Div(
+            'Dash: A weeb application framework for Pythoon.',
+            style={
+                'textAlign': 'center',
+                'color': colors['text']
+            }),
+        # Graph
+        dcc.Graph(
+            id='Avg-age-group',
+            figure=treemaps.getFigure()
+            # figure={
+            #     'data': [
+            #         {'x': data2['Age'], 'y': data2['size'], 'type': 'bar', 'name': 'Count By groups'}],
+            #     'layout': {
+            #         'plot_bgcolor': colors['background'],
+            #         'paper_bgcolor': colors['background'],
+            #         'font': {
+            #             'color': colors['text']
+            #         }
+            #     }
+            # }
+        ),
+        table.getDataTable()
+    ])
+
 
 # Callbacks
 @app.callback(
-	Output("main-page", "children"), 
-	Input("url", "pathname")
+    Output("main-page", "children"),
+    Input("url", "pathname")
 )
 def displayPage(pathname):
         if pathname == "/":
@@ -277,13 +294,13 @@ def displayPage(pathname):
 		
 # App Layout and Execution
 app.layout = html.Div(
-	children=[
+    children=[
         dcc.Location(id="url"),
-		buildNavbar(),
-		buildSidebar(),
-		buildHome()
-	],
+        buildNavbar(),
+        buildSidebar(),
+        buildHome()
+    ],
 )
 
 if __name__ == "__main__":
-	app.run_server(debug=True)
+    app.run_server(debug=True)

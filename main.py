@@ -6,7 +6,7 @@ import dash_html_components as html
 import pandas as pd
 from dash.dependencies import Input, Output
 
-if __name__ == '__main__':
-    print("Hello There General Kenobi")
-    mainPage = mp.MainPage()
-    mainPage.runPage()
+# if __name__ == '__main__':
+#     print("Hello There General Kenobi")
+#     mainPage = mp.MainPage()
+#     mainPage.runPage()
