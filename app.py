@@ -150,15 +150,15 @@ def buildNavbar():
                     dbc.Collapse(searchbar, id="navbar-collapse", navbar=True)
                 ]),
                 html.Span(
-                    dcc.Tabs(id='streamcloud-tabs', value='movies', children=[
+                    dcc.Tabs(id='streamcloud-tabs', value="movies", persistence=True, children=[
                         dcc.Tab(
-                            label='Movies',
+                            label="Movies",
                             value='movies',
                             style=tabStyle,
-                            selected_style=tabSelectedStyle
+                            selected_style=tabSelectedStyle,
                         ),
                         dcc.Tab(
-                            label='TV Shows',
+                            label="TV Shows",
                             value='tvshows',
                             style=tabStyle,
                             selected_style=tabSelectedStyle
@@ -176,11 +176,24 @@ def buildSidebar():
             dbc.Nav([
                 dbc.NavLink("Home", href="/", active="exact", 
                     style=sidebarLinkStyle),
-                dbc.NavLink("Analytics", href="/Analytics", active="exact", 
+                dbc.NavLink("Analytics", href="/analytics", active="exact", 
                     style=sidebarLinkStyle)
             ],
+                id="navMovies",
                 vertical=True,
-                pills=True
+                pills=True,
+                style={"display": "block"}
+            ),
+            dbc.Nav([
+                dbc.NavLink("Home", href="/tv", active="exact",
+                    style=sidebarLinkStyle),
+                dbc.NavLink("Analytics", href="/tv/analytics", active="exact",
+                    style=sidebarLinkStyle)
+            ],
+                id="navTV",
+                vertical=True,
+                pills=True,
+                style={"display": "none"}
             ),
             html.Hr(style={"border-top": "2px solid", "color": "#3B495F"}),
             html.H2("Filters", 
@@ -245,6 +258,24 @@ def buildHome():
         table.getDataTable()
     ])
 
+def buildHomeTV():
+    return html.Div(id="main-page", style=mainHomeStyle, children=[
+        # Overview Text
+        html.H1(
+            'Overview',
+            style={
+                'textAlign': 'left',
+                'text-transform': 'capitalize',
+                'font-family': 'Roboto',
+                'color': colors['lightText'],
+                'padding-bottom': '5px'
+            }
+        )
+    ])
+
+# Callbacks
+
+# Sidebar filtering
 @app.callback(
     Output('tree-map', 'figure'),
     Input('platform-filter', 'value'),
@@ -353,7 +384,9 @@ def updateGenreDropDown(data, value):
 def displayPage(pathname):
         if pathname == "/":
             return buildHome().children
-        elif pathname == "/Analytics":
+        if pathname == "/tv":
+            return buildHomeTV().children
+        elif pathname == "/analytics":
             return html.P([
                 "⠄⠄⠄⠄⠄⠄⢀⣠⣤⣶⣶⣶⣤⣄⠄⠄⢀⣠⣤⣤⣤⣤⣀⠄⠄⠄⠄⠄⠄⠄", html.Br(),
                 "⠄⠄⠄⠄⢠⣾⣿⣿⣿⣿⠿⠿⢿⣿⣿⡆⣿⣿⣿⣿⣿⣿⣿⣷⡄⠄⠄⠄⠄⠄", html.Br(),
@@ -379,14 +412,52 @@ def displayPage(pathname):
                 "font-size": "20px",
                 "font-weight": "bold",
             })
-        elif pathname == "/tv":
-            return buildHome().children
+        elif pathname == "/tv/analytics":
+            return html.P([
+                "⠄⠄⠄⠄⠄⠄⠄⣠⣴⣶⣿⣿⡿⠶⠄⠄⠄⠄⠐⠒⠒⠲⠶⢄⠄⠄⠄⠄⠄⠄", html.Br(),
+                "⠄⠄⠄⠄⠄⣠⣾⡿⠟⠋⠁⠄⢀⣀⡀⠤⣦⢰⣤⣶⢶⣤⣤⣈⣆⠄⠄⠄⠄⠄", html.Br(),
+                "⠄⠄⠄⠄⢰⠟⠁⠄⢀⣤⣶⣿⡿⠿⣿⣿⣊⡘⠲⣶⣷⣶⠶⠶⠶⠦⠤⡀⠄⠄", html.Br(),
+                "⠄⠔⠊⠁⠁⠄⠄⢾⡿⣟⡯⣖⠯⠽⠿⠛⠛⠭⠽⠊⣲⣬⠽⠟⠛⠛⠭⢵⣂⠄", html.Br(),
+                "⡎⠄⠄⠄⠄⠄⠄⠄⢙⡷⠋⣴⡆⠄⠐⠂⢸⣿⣿⡶⢱⣶⡇⠄⠐⠂⢹⣷⣶⠆", html.Br(),
+                "⡇⠄⠄⠄⠄⣀⣀⡀⠄⣿⡓⠮⣅⣀⣀⣐⣈⣭⠤⢖⣮⣭⣥⣀⣤⣤⣭⡵⠂⠄", html.Br(),
+                "⣤⡀⢠⣾⣿⣿⣿⣿⣷⢻⣿⣿⣶⣶⡶⢖⣢⣴⣿⣿⣟⣛⠿⠿⠟⣛⠉⠄⠄⠄", html.Br(),
+                "⣿⡗⣼⣿⣿⣿⣿⡿⢋⡘⠿⣿⣿⣷⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⡀⠄⠄", html.Br(),
+                "⣿⠱⢿⣿⣿⠿⢛⠰⣞⡛⠷⣬⣙⡛⠻⠿⠿⠿⣿⣿⣿⣿⣿⣿⣿⠿⠛⣓⡀⠄", html.Br(),
+                "⢡⣾⣷⢠⣶⣿⣿⣷⣌⡛⠷⣦⣍⣛⠻⠿⢿⣶⣶⣶⣦⣤⣴⣶⡶⠾⠿⠟⠁⠄", html.Br(),
+                "⣿⡟⣡⣿⣿⣿⣿⣿⣿⣿⣷⣦⣭⣙⡛⠓⠒⠶⠶⠶⠶⠶⠶⠶⠶⠿⠟⠄⠄⠄", html.Br(),
+                "⠿⡐⢬⣛⡻⠿⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⡶⠟⠃⠄⠄⠄⠄⠄⠄", html.Br(),
+                "⣾⣿⣷⣶⣭⣝⣒⣒⠶⠬⠭⠭⠭⠭⠭⠭⠭⣐⣒⣤⣄⡀⠄⠄⠄⠄⠄⠄⠄⠄", html.Br(),
+                "⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣦⠄⠄⠄⠄⠄⠄⠄"],
+            style={
+                "color": 'green',
+                "left": 50,
+                "margin-left": "4rem",
+                "margin-right": "3rem",	
+                "font-family": "Roboto", 
+                "font-size": "20px",
+                "font-weight": "bold",
+            })
+        
         return dbc.Jumbotron([
             html.H1("404: Not found", className="text-danger"),
             html.Hr,
             html.P(f"The pathname {pathname} was not recognised..."),
 		])
-		
+
+# Hide genre filter on TV Shows
+@app.callback(
+    Output("genre-filter", "style"),
+    Output("url", "pathname"),
+    Output("navMovies", "style"),
+    Output("navTV", "style"),
+    Input("streamcloud-tabs", "value")
+)
+def showHideGenres(selectedTab):
+    if selectedTab == "movies":
+        return dropdownStyle, "/", {"display": "block"}, {"display": "none"}
+    if selectedTab == "tvshows":
+        return {'display': 'none'}, "/tv", {"display": "none"}, {"display": "block"} 
+
 # App Layout and Execution
 app.layout = html.Div(
     children=[
