@@ -28,6 +28,15 @@ dropDownDict = []
 i = 0
 treemaps = tm.TreeMapGraph(df_movies)
 table = td.TableData(df_movies)
+cleanData = table.getCleanData()
+
+allGenress = treemaps.getAllGenres()
+
+allGenress.sort()
+
+dropDownOptions = []
+for genre in allGenress:
+    dropDownOptions.append({'label': genre, 'value': genre})
 
 # Assets
 streamcloud_logo = './assets/streamcloud_logo.png'
@@ -182,10 +191,10 @@ def buildSidebar():
             dcc.Dropdown(
                 id="platform-filter",
                 options=[
-                {'label': 'Netflix', 'value': 'net'},
-                {'label': 'Prime Video', 'value': 'pv'},
-                {'label': 'Hulu', 'value': 'hul'},
-                {'label': 'Disney+', 'value': 'dis'}
+                {'label': 'Netflix', 'value': 'Netflix'},
+                {'label': 'Prime Video', 'value': 'Prime Video'},
+                {'label': 'Hulu', 'value': 'Hulu'},
+                {'label': 'Disney+', 'value': 'Disney+'}
             ],
                 placeholder= "Select a platform",
 				style = dropdownStyle
@@ -193,11 +202,7 @@ def buildSidebar():
 			html.Span(style={"position": "relative", "padding": "1px"}),
             dcc.Dropdown(
                 id="genre-filter",
-                options=[
-                {'label': 'Action', 'value': 'act'},
-                {'label': 'Adventure', 'value': 'adv'},
-                {'label': 'Thriller', 'value': 'Thr'}
-            ],
+                options=dropDownOptions,
                 placeholder="Select a genre",
 				style = dropdownStyle
             )],
@@ -208,7 +213,7 @@ def buildHome():
     return html.Div(id="main-page", style=mainHomeStyle, children=[
         # Overview Text
         html.H1(
-            'OverviewMonkaW',
+            'Overview',
             style={
                 'textAlign': 'left',
                 'text-transform': 'capitalize',
@@ -219,7 +224,7 @@ def buildHome():
         ),
         # Graph
         dcc.Graph(
-            id='Avg-age-group',
+            id='tree-map',
             figure=treemaps.getFigure(),
             style={
                 "margin-bottom": "20px",
@@ -240,6 +245,26 @@ def buildHome():
         table.getDataTable()
     ])
 
+@app.callback(
+    Output('Data-Table', 'data'),
+    Input('platform-filter', 'value'),
+    Input('genre-filter', 'value')
+
+)
+def filterDataByComboBox(platformDropdownValue, genreDropdownValue):
+    if platformDropdownValue == None and genreDropdownValue == None:
+        return cleanData.to_dict('records')
+
+    if platformDropdownValue != None and genreDropdownValue == None:
+        filteredData = cleanData[cleanData['Platform'].str.contains(platformDropdownValue)]
+
+    if genreDropdownValue != None and platformDropdownValue == None:
+        filteredData = cleanData[cleanData['Genres'].str.contains(genreDropdownValue)]
+
+    if platformDropdownValue != None and genreDropdownValue != None:
+        filteredData = cleanData[cleanData['Platform'].str.contains(platformDropdownValue)]
+        filteredData = filteredData[filteredData['Genres'].str.contains(genreDropdownValue)]
+    return filteredData.to_dict('records')
 
 # Callbacks
 @app.callback(

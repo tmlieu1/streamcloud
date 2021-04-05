@@ -9,7 +9,7 @@ class TableData:
             self.cleanMovieData()
 
         self.dataTable = dash_table.DataTable(
-            id="Data Table",
+            id="Data-Table",
             columns=[{"name": i, "id": i} for i in self.data.columns],
             data=self.data.to_dict('records'),
             style_as_list_view=True,
@@ -84,8 +84,12 @@ class TableData:
             fixed_rows={'headers': True, 'data': 0}
         )
 
+
     def getDataTable(self):
         return self.dataTable
+
+    def getCleanData(self):
+        return self.data
 
     def cleanMovieData(self):
         self.data = self.data.drop(['ID', 'Unnamed: 0', 'Type'], axis=1)
