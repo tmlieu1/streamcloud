@@ -41,15 +41,19 @@ class TreeMapGraph:
         })
     pass
 
+    def getAllGenres(self):
+        return self.allGenres
+
     def createAllGenres(self) -> None:
         genres = []
         for genreStr in self.data["Genres"].tolist():
             if isinstance(genreStr, str):
                 genreList = genreStr.split(",")
                 for genre in genreList:
-                    genres.append(genre)
+                    genres.append(genre.strip())
 
-        self.allGenres = list(set(genres))
+        self.allGenres = list(dict.fromkeys(genres))
+        print()
     pass
 
     def getFigure(self):
