@@ -76,9 +76,10 @@ mainHomeStyle = {
     "left": 60,
     "margin-left": "10rem",
     "margin-right": "4rem",
-    'padding-left': '4rem',
-    'padding-top': '5rem',
-    'padding-right': '1rem',
+    # 'padding-left': '4rem',
+    # 'padding-top': '5rem',
+    # 'padding-right': '1rem',
+    'padding': '5rem 1rem 2rem 4rem',
     "background-color": "#202530",
 }
 
@@ -197,8 +198,7 @@ def buildSidebar():
                 {'label': 'Adventure', 'value': 'adv'},
                 {'label': 'Thriller', 'value': 'Thr'}
             ],
-                multi=True,
-                placeholder= "Select a genre",
+                placeholder="Select a genre",
 				style = dropdownStyle
             )],
 			style = sidebarStyle
@@ -208,7 +208,7 @@ def buildHome():
     return html.Div(id="main-page", style=mainHomeStyle, children=[
         # Overview Text
         html.H1(
-            'Overview',
+            'OverviewMonkaW',
             style={
                 'textAlign': 'left',
                 'text-transform': 'capitalize',
@@ -222,7 +222,7 @@ def buildHome():
             id='Avg-age-group',
             figure=treemaps.getFigure(),
             style={
-                "border-radius": "20px",
+                "margin-bottom": "20px",
                 "box-shadow": "2px 8px 8px 1px rgba(25, 25, 25, 0.8)"
             }
             # figure={
