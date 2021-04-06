@@ -134,7 +134,6 @@ class TreeMapGraph:
         return datafAllTrees
     pass
 
-
 # print(datafAllTrees)
 
 # figure2 = go.Figure(go.Treemap(

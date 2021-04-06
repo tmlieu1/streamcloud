@@ -1,4 +1,4 @@
-,Title,Year,Age,IMDb,Rotten Tomatoes,Netflix,Hulu,Prime Video,Disney+,type
+ID,Title,Year,Age,IMDb,RT,Netflix,Hulu,Prime Video,Disney+,Type
 0,Breaking Bad,2008,18+,9.5,96%,1,0,0,0,1
 1,Stranger Things,2016,16+,8.8,93%,1,0,0,0,1
 2,Money Heist,2017,18+,8.4,91%,1,0,0,0,1

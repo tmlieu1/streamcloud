@@ -20,19 +20,21 @@ app = dash.Dash(
 server = app.server
 
 # Data
+
+# load datasets
 df_movies = pd.read_csv('./data/movies.csv')
 df_shows = pd.read_csv('./data/tv_shows.csv')
-data2 = df_shows.groupby(df_shows['Age'], as_index=False).size()
-ageGroup = df_shows['Age'].tolist()
-dropDownDict = []
-i = 0
+
+# movie idioms
 treemaps = tm.TreeMapGraph(df_movies)
 table = td.TableData(df_movies)
 cleanData = table.getCleanData()
-
 allGenress = treemaps.getAllGenres()
-
 allGenress.sort()
+
+# tv show idioms
+tableTV = td.TableData(df_shows, movies=False)
+cleanDataShows = tableTV.getCleanData()
 
 dropDownOptions = []
 for genre in allGenress:
@@ -259,7 +261,7 @@ def buildHome():
     ])
 
 def buildHomeTV():
-    return html.Div(id="main-page", style=mainHomeStyle, children=[
+    return html.Div(id="main-page-tv", style=mainHomeStyle, children=[
         # Overview Text
         html.H1(
             'Overview',
@@ -270,7 +272,8 @@ def buildHomeTV():
                 'color': colors['lightText'],
                 'padding-bottom': '5px'
             }
-        )
+        ),
+        tableTV.getDataTable()
     ])
 
 # Callbacks
@@ -366,6 +369,8 @@ def displayPage(pathname):
 
 # Hide genre filter on TV Shows
 @app.callback(
+    Output("platform-filter", "value"),
+    Output("genre-filter", "value"),
     Output("genre-filter", "style"),
     Output("url", "pathname"),
     Output("navMovies", "style"),
@@ -374,9 +379,9 @@ def displayPage(pathname):
 )
 def showHideGenres(selectedTab):
     if selectedTab == "movies":
-        return dropdownStyle, "/", {"display": "block"}, {"display": "none"}
+        return "", "", dropdownStyle, "/", {"display": "block"}, {"display": "none"}
     if selectedTab == "tvshows":
-        return {'display': 'none'}, "/tv", {"display": "none"}, {"display": "block"} 
+        return "", "", {'display': 'none'}, "/tv", {"display": "none"}, {"display": "block"} 
 
 # App Layout and Execution
 app.layout = html.Div(
