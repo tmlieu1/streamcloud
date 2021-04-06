@@ -280,26 +280,106 @@ def buildHomeTV():
 
 # Sidebar filtering
 @app.callback(
+    Output('tree-map', 'figure'),
+    Input('platform-filter', 'value'),
+    Input('genre-filter', 'value'),
+    State('tree-map', 'figure')
+)
+def updateTreeMap(platformDropdownValue, genreDropdownValue, fig):
+    if fig is None:
+        return dash.no_update
+    tempFig = fig
+    if platformDropdownValue is None and genreDropdownValue is None:
+        tempFig['data'][0]['level'] = 'All Movies'
+        return tempFig
+    if platformDropdownValue is not None and genreDropdownValue is None:
+        tempFig['data'][0]['level'] = platformDropdownValue
+    if genreDropdownValue is not None and platformDropdownValue is not None:
+        tempFig['data'][0]['level'] = genreDropdownValue + platformDropdownValue
+    return tempFig
+
+@app.callback(
     Output('Data-Table', 'data'),
     Input('platform-filter', 'value'),
-    Input('genre-filter', 'value')
+    Input('genre-filter', 'value'),
+    Input('tree-map', 'clickData')
 )
-def filterDataByComboBox(platformDropdownValue, genreDropdownValue):
-    if platformDropdownValue == None and genreDropdownValue == None:
+def filterDataByComboBox(platformDropdownValue, genreDropdownValue, data):
+
+    # print(treemaps)
+    if data is None and (platformDropdownValue is None and genreDropdownValue is None):
         return cleanData.to_dict('records')
 
-    if platformDropdownValue != None and genreDropdownValue == None:
+    if platformDropdownValue is None and genreDropdownValue is None and data['points'][0]['currentPath'] == '/':
+        return cleanData.to_dict('records')
+
+    if data is not None and data['points'][0]['currentPath'] != '/':
+        # print("The data:", treeData['data'][0]['level'])
+        # if data['points'][0]['currentPath'] == '/':
+        #     return cleanData.to_dict('records')
+        idOfData = data['points'][0]['label']
+        # print("label:", idOfData)
+        if data['points'][0]['parent'] == 'All Movies':
+            filteredData = cleanData[cleanData['Platform'].str.contains(idOfData)]
+            return filteredData
+        else:
+            filteredData = cleanData[cleanData['Platform'].str.contains(data['points'][0]['parent'])]
+            filteredData = filteredData[filteredData['Genres'].str.contains(idOfData)]
+            return filteredData
+
+
+    if platformDropdownValue is not None and genreDropdownValue is None:
         filteredData = cleanData[cleanData['Platform'].str.contains(platformDropdownValue)]
 
-    if genreDropdownValue != None and platformDropdownValue == None:
+    if genreDropdownValue is not None and platformDropdownValue is None:
         filteredData = cleanData[cleanData['Genres'].str.contains(genreDropdownValue)]
 
-    if platformDropdownValue != None and genreDropdownValue != None:
+    if platformDropdownValue is not None and genreDropdownValue is not None:
         filteredData = cleanData[cleanData['Platform'].str.contains(platformDropdownValue)]
         filteredData = filteredData[filteredData['Genres'].str.contains(genreDropdownValue)]
     return filteredData.to_dict('records')
 
-# Page changes
+
+@app.callback(
+    Output('platform-filter', 'value'),
+    Input('tree-map', 'clickData'),
+    Input('platform-filter', 'value')
+)
+def updatePlatformDropDown(data, value):
+    if data is None:
+        return dash.no_update
+    if data['points'][0]['parent'] == 'All Movies':
+        return data['points'][0]['id']
+    # if value is not None and data['points'][0]['currentPath'] != '/':
+    #     return value
+    # if data['points'][0]['currentPath'] == '/' and value is not None:
+    #     return None
+    return value
+
+@app.callback(
+    Output('genre-filter', 'value'),
+    Input('tree-map', 'clickData'),
+    Input('platform-filter', 'value')
+)
+def updateGenreDropDown(data, value):
+    if data is None:
+        return dash.no_update
+    if value is None or data['points'][0]['parent'] == 'All Movies':
+        return None
+    if data['points'][0]['parent'] != 'All Movies':
+        return data['points'][0]['label']
+    return dash.no_update
+
+# @app.callback(
+#     Output('Data-Table', 'data'),
+#     Input('tree-maps', 'clickData')
+# )
+# def filterDataByTreeMap(data):
+#     print("The data:", data)
+#     if data is None:
+#         return cleanData.to_dict('records')
+
+# Callbacks
 @app.callback(
     Output("main-page", "children"),
     Input("url", "pathname")
