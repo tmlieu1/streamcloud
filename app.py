@@ -153,12 +153,14 @@ def buildNavbar():
 	return html.Div([
             dbc.Navbar([
                 dbc.Row([
-                    dbc.Col(html.Img(src='./assets/streamcloud_logo.png', height="30px"), style={"padding-right": "30px"}),
+                    dbc.Col(html.Img(src='./assets/streamcloud_logo.png', 
+                        height="30px"), style={"padding-right": "30px"}),
                     dbc.NavbarToggler(id="navbar-toggler"),
                     dbc.Collapse(searchbar, id="navbar-collapse", navbar=True)
                 ]),
                 html.Span(
-                    dcc.Tabs(id='streamcloud-tabs', value="movies", persistence=True, children=[
+                    dcc.Tabs(id='streamcloud-tabs', value="movies", 
+                        persistence=True, persistence_type="local", children=[
                         dcc.Tab(
                             label="Movies",
                             value='movies',
@@ -342,7 +344,6 @@ def filterDataByComboBox(platformDropdownValue, genreDropdownValue, data):
             filteredData = filteredData[filteredData['Genres'].str.contains(idOfData)]
             return filteredData
 
-
     if platformDropdownValue is not None and genreDropdownValue is None:
         filteredData = cleanData[cleanData['Platform'].str.contains(platformDropdownValue)]
 
@@ -352,6 +353,17 @@ def filterDataByComboBox(platformDropdownValue, genreDropdownValue, data):
     if platformDropdownValue is not None and genreDropdownValue is not None:
         filteredData = cleanData[cleanData['Platform'].str.contains(platformDropdownValue)]
         filteredData = filteredData[filteredData['Genres'].str.contains(genreDropdownValue)]
+    return filteredData.to_dict('records')
+
+@app.callback(
+    Output('Data-Table-TV', 'data'),
+    Input('platform-filter-tv', 'value')
+)
+def filterTVDataByComboBox(platformDropdownValue):
+    if platformDropdownValue is None:
+        return cleanData.to_dict('records')
+    if platformDropdownValue is not None:
+        filteredData = cleanData[cleanData['Platform'].str.contains(platformDropdownValue)]
     return filteredData.to_dict('records')
 
 # Updating movies platform dropdown by treemap
@@ -489,5 +501,7 @@ app.layout = html.Div(
     ],
 )
 
+app.config.suppress_callback_exceptions=True
+
 if __name__ == "__main__":
-    app.run_server(debug=True)
+    app.run_server(debug=True,dev_tools_ui=False,dev_tools_props_check=False)
