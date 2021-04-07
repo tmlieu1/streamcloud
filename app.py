@@ -1,4 +1,6 @@
-# Imports
+# =============================================================================#
+# Imports & Inits                                                              #
+# =============================================================================#
 import dash
 import dash_bootstrap_components as dbc
 import dash_core_components as dcc
@@ -19,21 +21,26 @@ app = dash.Dash(
 )
 server = app.server
 
-# Data
+# =============================================================================#
+# Data & Assets                                                                #
+# =============================================================================#
+
+# Load Datasets
 df_movies = pd.read_csv('./data/movies.csv')
 df_shows = pd.read_csv('./data/tv_shows.csv')
-data2 = df_shows.groupby(df_shows['Age'], as_index=False).size()
-ageGroup = df_shows['Age'].tolist()
-dropDownDict = []
-i = 0
+
+# Generate Idioms for Movies
 treemaps = tm.TreeMapGraph(df_movies)
 table = td.TableData(df_movies)
 cleanData = table.getCleanData()
-
 allGenress = treemaps.getAllGenres()
-
 allGenress.sort()
 
+# Generate Idioms for TV Shows
+tableTV = td.TableData(df_shows, movies=False)
+cleanDataShows = tableTV.getCleanData()
+
+# Fill Dropdown filters
 dropDownOptions = []
 for genre in allGenress:
     dropDownOptions.append({'label': genre, 'value': genre})
@@ -41,7 +48,9 @@ for genre in allGenress:
 # Assets
 streamcloud_logo = './assets/streamcloud_logo.png'
 
-# Colors and Styles
+# =============================================================================#
+# Colors & Styling                                                             #
+# =============================================================================#
 colors = {'background': '#202530', 'navigation': '#272D3F',
           'text': '#ffffff', "lightText": "#ABD6FE", "lightblueText": "#7196bb"}
 
@@ -85,9 +94,6 @@ mainHomeStyle = {
     "left": 60,
     "margin-left": "10rem",
     "margin-right": "4rem",
-    # 'padding-left': '4rem',
-    # 'padding-top': '5rem',
-    # 'padding-right': '1rem',
     'padding': '5rem 1rem 2rem 4rem',
     "background-color": "#202530",
 }
@@ -140,7 +146,9 @@ searchbar = dbc.Row([
     align="center"
 )
 
-# Div Elements
+# =============================================================================#
+# Div Elements                                                                 #
+# =============================================================================#
 def buildNavbar():
 	return html.Div([
             dbc.Navbar([
@@ -173,6 +181,7 @@ def buildNavbar():
 
 def buildSidebar():
 	return html.Div([
+            # Movies navigation
             dbc.Nav([
                 dbc.NavLink("Home", href="/", active="exact", 
                     style=sidebarLinkStyle),
@@ -184,6 +193,7 @@ def buildSidebar():
                 pills=True,
                 style={"display": "block"}
             ),
+            # TV Shows navigation
             dbc.Nav([
                 dbc.NavLink("Home", href="/tv", active="exact",
                     style=sidebarLinkStyle),
@@ -195,12 +205,14 @@ def buildSidebar():
                 pills=True,
                 style={"display": "none"}
             ),
+            # Line & Filters Text
             html.Hr(style={"border-top": "2px solid", "color": "#3B495F"}),
             html.H2("Filters", 
                 style={"color": colors["lightText"], 
                     "font-family": "Roboto", 
                     "font-size": "24px",
                     "text-transform": "capitalize"}),
+            # Movies Dropdown
             dcc.Dropdown(
                 id="platform-filter",
                 options=[
@@ -212,13 +224,26 @@ def buildSidebar():
                 placeholder= "Select a platform",
 				style = dropdownStyle
             ),
+            # TV Dropdown
+            dcc.Dropdown(
+                id="platform-filter-tv",
+                options=[
+                {'label': 'Netflix', 'value': 'Netflix'},
+                {'label': 'Prime Video', 'value': 'Prime Video'},
+                {'label': 'Hulu', 'value': 'Hulu'},
+                {'label': 'Disney+', 'value': 'Disney+'}
+            ],
+                placeholder= "Select a platform",
+				style = {"display": "none"}
+            ),
 			html.Span(style={"position": "relative", "padding": "1px"}),
             dcc.Dropdown(
                 id="genre-filter",
                 options=dropDownOptions,
                 placeholder="Select a genre",
 				style = dropdownStyle
-            )],
+            ),
+            ],
 			style = sidebarStyle
 		)
 
@@ -243,23 +268,12 @@ def buildHome():
                 "margin-bottom": "20px",
                 "box-shadow": "2px 8px 8px 1px rgba(25, 25, 25, 0.8)"
             }
-            # figure={
-            #     'data': [
-            #         {'x': data2['Age'], 'y': data2['size'], 'type': 'bar', 'name': 'Count By groups'}],
-            #     'layout': {
-            #         'plot_bgcolor': colors['background'],
-            #         'paper_bgcolor': colors['background'],
-            #         'font': {
-            #             'color': colors['text']
-            #         }
-            #     }
-            # }
         ),
         table.getDataTable()
     ])
 
 def buildHomeTV():
-    return html.Div(id="main-page", style=mainHomeStyle, children=[
+    return html.Div(id="main-page-tv", style=mainHomeStyle, children=[
         # Overview Text
         html.H1(
             'Overview',
@@ -270,10 +284,13 @@ def buildHomeTV():
                 'color': colors['lightText'],
                 'padding-bottom': '5px'
             }
-        )
+        ),
+        tableTV.getDataTable()
     ])
 
-# Callbacks
+# =============================================================================#
+# Callbacks                                                                    #
+# =============================================================================#
 
 # Sidebar filtering
 @app.callback(
@@ -295,6 +312,7 @@ def updateTreeMap(platformDropdownValue, genreDropdownValue, fig):
         tempFig['data'][0]['level'] = genreDropdownValue + platformDropdownValue
     return tempFig
 
+# Filtering table data by dropdown
 @app.callback(
     Output('Data-Table', 'data'),
     Input('platform-filter', 'value'),
@@ -336,7 +354,7 @@ def filterDataByComboBox(platformDropdownValue, genreDropdownValue, data):
         filteredData = filteredData[filteredData['Genres'].str.contains(genreDropdownValue)]
     return filteredData.to_dict('records')
 
-
+# Updating movies platform dropdown by treemap
 @app.callback(
     Output('platform-filter', 'value'),
     Input('tree-map', 'clickData'),
@@ -353,6 +371,7 @@ def updatePlatformDropDown(data, value):
     #     return None
     return value
 
+# Updating movies genre dropdown by treemap
 @app.callback(
     Output('genre-filter', 'value'),
     Input('tree-map', 'clickData'),
@@ -376,7 +395,7 @@ def updateGenreDropDown(data, value):
 #     if data is None:
 #         return cleanData.to_dict('records')
 
-# Callbacks
+# Page changes
 @app.callback(
     Output("main-page", "children"),
     Input("url", "pathname")
@@ -444,8 +463,10 @@ def displayPage(pathname):
             html.P(f"The pathname {pathname} was not recognised..."),
 		])
 
-# Hide genre filter on TV Shows
+# Adjust filters based on tab
 @app.callback(
+    Output("platform-filter", "style"),
+    Output("platform-filter-tv", "style"),
     Output("genre-filter", "style"),
     Output("url", "pathname"),
     Output("navMovies", "style"),
@@ -454,9 +475,9 @@ def displayPage(pathname):
 )
 def showHideGenres(selectedTab):
     if selectedTab == "movies":
-        return dropdownStyle, "/", {"display": "block"}, {"display": "none"}
+        return dropdownStyle, {"display": "none"}, dropdownStyle, "/", {"display": "block"}, {"display": "none"}
     if selectedTab == "tvshows":
-        return {'display': 'none'}, "/tv", {"display": "none"}, {"display": "block"} 
+        return {"display": "none"}, dropdownStyle, {'display': 'none'}, "/tv", {"display": "none"}, {"display": "block"} 
 
 # App Layout and Execution
 app.layout = html.Div(

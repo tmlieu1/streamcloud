@@ -3,7 +3,6 @@ import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 import math
 
-
 class TreeMapGraph:
 
     def __init__(self, data):
@@ -133,7 +132,6 @@ class TreeMapGraph:
         print("Sum of platforms =", summamama, "\nSum of data =", len(self.data), "\nSum of Gen =", sumofGen)
         return datafAllTrees
     pass
-
 
 # print(datafAllTrees)
 

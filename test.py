@@ -1,10 +1,11 @@
+'''
 import pandas as pd
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 import math
 
 data = pd.read_csv('./data/movies.csv')
-data = data.drop(['Unnamed: 0', 'Type'], axis=1)
+data = data.drop(['Type'], axis=1)
 
 data.loc[data["Netflix"] == 1, 'Netflix'] = 'Netflix '
 data.loc[data['Netflix'] == 0, 'Netflix'] = ''
@@ -34,6 +35,7 @@ fig = go.Figure(data=[go.Table(
                 font=dict(color='#ffffff')
                 ),
     cells=dict(values=valuesOfData))])
+'''
 # fig.show()
 # genres = []
 # for genreStr in data["Genres"].tolist():
