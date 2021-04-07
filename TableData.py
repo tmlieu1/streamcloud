@@ -10,6 +10,7 @@ class TableData:
         if movies:
             self.dataTable = dash_table.DataTable(
                 id="Data-Table",
+                sort_action="native",
                 columns=[{"name": i, "id": i} for i in self.data.columns],
                 data=self.data.to_dict('records'),
                 style_as_list_view=True,
@@ -27,17 +28,31 @@ class TableData:
                 },
                 style_cell_conditional=[
                     {'if': {'column_id': 'Title'},
-                    'width': '30%'},
+                    'width': '28%'},
+                    {'if': {'column_id': 'Year'},
+                    'width': '4%'},
+                    {'if': {'column_id': 'Age'},
+                    'width': '4%'},
+                    {'if': {'column_id': 'IMDb'},
+                    'width': '4%'},
+                    {'if': {'column_id': 'RT'},
+                    'width': '4%'},
                     {'if': {'column_id': 'Country'},
                     'width': '10%'},
                     {'if': {'column_id': 'Genres'},
                     'width': '10%'},
                     {'if': {'column_id': 'Directors'},
                     'width': '10%'},
+                    {'if': {'column_id': 'Language'},
+                    'width': '10%'},
+                    {'if': {'column_id': 'Runtime'},
+                    'width': '6%'},
+                    {'if': {'column_id': 'Platform'},
+                    'width': '10%'},
                 ],
                 style_header_conditional=[
-                    {'if': {'column_id': 'Runtime'},
-                    'padding-right': '3rem'},
+                    {'if': {'column_id': 'Platform'},
+                    'padding-left': '1rem'},
                     {'if': {'column_id': 'Title'},
                     'padding-left': '1rem'}
                 ],
@@ -58,8 +73,8 @@ class TableData:
                         'backgroundColor': '#272d3f'},
                     {'if': {'row_index': 'odd'},
                         'backgroundColor': '#2c3245'},
-                    {'if': {'column_id': 'Runtime'},
-                        'padding-right': '3rem'},
+                    {'if': {'column_id': 'Platform'},
+                        'padding-left': '1rem'},
                     {'if': {'column_id': 'Title'},
                         'padding-left': '1rem'}
                 ],
@@ -69,6 +84,7 @@ class TableData:
         if not movies:
             self.dataTable = dash_table.DataTable(
                 id="Data-Table-TV",
+                sort_action="native",
                 columns=[{"name": i, "id": i} for i in self.data.columns],
                 data=self.data.to_dict('records'),
                 style_as_list_view=True,

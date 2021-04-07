@@ -361,9 +361,9 @@ def filterDataByComboBox(platformDropdownValue, genreDropdownValue, data):
 )
 def filterTVDataByComboBox(platformDropdownValue):
     if platformDropdownValue is None:
-        return cleanData.to_dict('records')
+        return cleanDataShows.to_dict('records')
     if platformDropdownValue is not None:
-        filteredData = cleanData[cleanData['Platform'].str.contains(platformDropdownValue)]
+        filteredData = cleanDataShows[cleanDataShows['Platform'].str.contains(platformDropdownValue)]
     return filteredData.to_dict('records')
 
 # Updating movies platform dropdown by treemap
@@ -468,7 +468,10 @@ def displayPage(pathname):
                 "font-size": "20px",
                 "font-weight": "bold",
             })
-        
+        elif pathname == "/search":
+            return html.P(["Hmm... Yes"])
+        elif pathname == "/tv/search":
+            return html.P(["Hmm... Yes indeed"])
         return dbc.Jumbotron([
             html.H1("404: Not found", className="text-danger"),
             html.Hr,
