@@ -134,6 +134,7 @@ class TableData:
                 fixed_rows={'headers': True, 'data': 0}
             )
 
+
     def getDataTable(self):
         return self.dataTable
 

@@ -11,6 +11,7 @@ import dash_table as dt
 import plotly.graph_objects as go
 import TreeMaps as tm
 import TableData as td
+import BarChartTvShow as bcts
 
 # Init
 app = dash.Dash(
@@ -39,6 +40,14 @@ allGenress.sort()
 # Generate Idioms for TV Shows
 tableTV = td.TableData(df_shows, movies=False)
 cleanDataShows = tableTV.getCleanData()
+barChartTvShows = bcts.BarChartTvShow(df_shows)
+
+barChartColors = {'Netflix': ['#E50914', '#ABABAB', '#ABABAB', '#ABABAB'],
+                  'Prime Video': ['#ABABAB', '#00A8E1', '#ABABAB', '#ABABAB'],
+                  'Hulu': ['#ABABAB', '#ABABAB', '#1CE783', '#ABABAB'],
+                  'Disney+': ['#ABABAB', '#ABABAB', '#ABABAB', '#1038CD'],
+                  'All': ['#E50914', '#00A8E1', '#1CE783', '#1038CD']}
+
 
 # Fill Dropdown filters
 dropDownOptions = []
@@ -287,12 +296,38 @@ def buildHomeTV():
                 'padding-bottom': '5px'
             }
         ),
+        dcc.Graph(
+            id='bar-chart',
+            figure=barChartTvShows.getFigure(),
+            style={
+                "margin-bottom": "20px",
+                "box-shadow": "2px 8px 8px 1px rgba(25, 25, 25, 0.8)"
+            }
+        ),
         tableTV.getDataTable()
     ])
 
 # =============================================================================#
 # Callbacks                                                                    #
 # =============================================================================#
+
+@app.callback(
+    Output('bar-chart', 'figure'),
+    Input('bar-chart', 'figure'),
+    Input('platform-filter-tv', 'value')
+)
+def updateBarChart(fig, platValue):
+    if fig is None:
+        return dash.no_update
+
+    tempfig = fig
+    if platValue is None:
+        tempfig['data'][0]['marker']['color'] = barChartColors['All']
+        return tempfig
+
+    tempfig['data'][0]['marker']['color'] = barChartColors[platValue]
+
+    return tempfig
 
 # Sidebar filtering
 @app.callback(

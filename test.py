@@ -1,9 +1,21 @@
+#
+# import pandas as pd
+# import plotly.graph_objects as go
+# from plotly.subplots import make_subplots
+# import math
+#
+#
+# data = pd.read_csv('./data/tv_shows.csv')
+#
+# platforms = ['Netflix', 'Prime Video', 'Hulu', 'Disney+']
+# platColors = ['#E50914', '#00A8E1', '#1CE783', '#1038CD']
+# countPlatforms = []
+# for platform in platforms:
+#     countPlatforms.append(data[platform].sum())
+#
+# fig = go.Figure(data=[go.Bar(x=platforms, y=countPlatforms, marker_color=platColors)])
+# fig.show()
 '''
-import pandas as pd
-import plotly.graph_objects as go
-from plotly.subplots import make_subplots
-import math
-
 data = pd.read_csv('./data/movies.csv')
 data = data.drop(['Type'], axis=1)
 
