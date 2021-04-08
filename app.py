@@ -89,7 +89,8 @@ dropdownStyle = {
 	"font-family": "Roboto", 
 	"font-size": "20px",
     "font-weight": "bold",
-    "background-color": "#3b495f"
+    "background-color": "#3b495f",
+    "color": "#ABD6FE"
 }
 
 mainHomeStyle = {
