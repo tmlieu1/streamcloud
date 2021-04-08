@@ -98,7 +98,8 @@ dropdownStyle = {
 	"font-family": "Roboto", 
 	"font-size": "20px",
     "font-weight": "bold",
-    "background-color": "#3b495f"
+    "background-color": "#3b495f",
+    "color": "#ABD6FE"
 }
 
 mainHomeStyle = {
@@ -362,6 +363,20 @@ def updateBarChart(fig, platValue):
     tempfig['data'][0]['marker']['color'] = barChartColors[platValue]
 
     return tempfig
+
+# Updates tv shows platform table by dropdown
+@app.callback(
+    Output('Data-Table-TV', 'data'),
+    Input('platform-filter-TV', 'value')
+)
+def filterTVDataByComboBox(platformDropdownValue):
+    if platformDropdownValue is None:
+        return cleanDataShows.to_dict('records')
+    if platformDropdownValue is not None:
+        filteredData = cleanDataShows[cleanDataShows['Platform'].str.contains(platformDropdownValue)]
+    return filteredData.to_dict('records')
+
+
 # Update search for tv shows in search page
 @app.callback(
     Output('Data-Table-TV-Search', "data"),
@@ -448,18 +463,6 @@ def filterDataByComboBox(platformDropdownValue, genreDropdownValue, data):
     if platformDropdownValue is not None and genreDropdownValue is not None:
         filteredData = cleanData[cleanData['Platform'].str.contains(platformDropdownValue)]
         filteredData = filteredData[filteredData['Genres'].str.contains(genreDropdownValue)]
-    return filteredData.to_dict('records')
-
-# Updates tv shows platform table by dropdown
-@app.callback(
-    Output('Data-Table-TV', 'data'),
-    Input('platform-filter-TV', 'value')
-)
-def filterTVDataByComboBox(platformDropdownValue):
-    if platformDropdownValue is None:
-        return cleanDataShows.to_dict('records')
-    if platformDropdownValue is not None:
-        filteredData = cleanDataShows[cleanDataShows['Platform'].str.contains(platformDropdownValue)]
     return filteredData.to_dict('records')
 
 # Updating movies platform dropdown by treemap
