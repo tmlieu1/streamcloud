@@ -299,7 +299,7 @@ def buildHomeTV():
     Output('tree-map', 'figure'),
     Input('platform-filter', 'value'),
     Input('genre-filter', 'value'),
-    State('tree-map', 'figure')
+    Input('tree-map', 'figure')
 )
 def updateTreeMap(platformDropdownValue, genreDropdownValue, fig):
     if fig is None:
@@ -310,16 +310,18 @@ def updateTreeMap(platformDropdownValue, genreDropdownValue, fig):
         return tempFig
     if platformDropdownValue is not None and genreDropdownValue is None:
         tempFig['data'][0]['level'] = platformDropdownValue
+        return tempFig
     if genreDropdownValue is not None and platformDropdownValue is not None:
         tempFig['data'][0]['level'] = genreDropdownValue + platformDropdownValue
-    return tempFig
+        return tempFig
+    return dash.no_update
 
 # Filtering table data by dropdown
 @app.callback(
     Output('Data-Table', 'data'),
-    Input('platform-filter', 'value'),
-    Input('genre-filter', 'value'),
-    Input('tree-map', 'clickData')
+    [Input('platform-filter', 'value'),
+     Input('genre-filter', 'value'),
+     Input('tree-map', 'clickData')]
 )
 def filterDataByComboBox(platformDropdownValue, genreDropdownValue, data):
 
@@ -327,7 +329,8 @@ def filterDataByComboBox(platformDropdownValue, genreDropdownValue, data):
     if data is None and (platformDropdownValue is None and genreDropdownValue is None):
         return cleanData.to_dict('records')
 
-    if platformDropdownValue is None and genreDropdownValue is None and data['points'][0]['currentPath'] == '/':
+    if platformDropdownValue is None and genreDropdownValue is None and (data['points'][0]['currentPath'] == '/' or
+                                                                         data['points'][0]['parent'] == 'All Movies'):
         return cleanData.to_dict('records')
 
     if data is not None and data['points'][0]['currentPath'] != '/':
@@ -338,11 +341,11 @@ def filterDataByComboBox(platformDropdownValue, genreDropdownValue, data):
         # print("label:", idOfData)
         if data['points'][0]['parent'] == 'All Movies':
             filteredData = cleanData[cleanData['Platform'].str.contains(idOfData)]
-            return filteredData
+            return filteredData.to_dict('records')
         else:
             filteredData = cleanData[cleanData['Platform'].str.contains(data['points'][0]['parent'])]
             filteredData = filteredData[filteredData['Genres'].str.contains(idOfData)]
-            return filteredData
+            return filteredData.to_dict('records')
 
     if platformDropdownValue is not None and genreDropdownValue is None:
         filteredData = cleanData[cleanData['Platform'].str.contains(platformDropdownValue)]
@@ -370,15 +373,15 @@ def filterTVDataByComboBox(platformDropdownValue):
 @app.callback(
     Output('platform-filter', 'value'),
     Input('tree-map', 'clickData'),
-    Input('platform-filter', 'value')
+    State('platform-filter', 'value')
 )
 def updatePlatformDropDown(data, value):
     if data is None:
         return dash.no_update
-    if data['points'][0]['parent'] == 'All Movies':
+    if value is None and data['points'][0]['parent'] == 'All Movies':
         return data['points'][0]['id']
-    # if value is not None and data['points'][0]['currentPath'] != '/':
-    #     return value
+    if value is not None and data['points'][0]['currentPath'] == '/':
+        return None
     # if data['points'][0]['currentPath'] == '/' and value is not None:
     #     return None
     return value
@@ -394,7 +397,7 @@ def updateGenreDropDown(data, value):
         return dash.no_update
     if value is None or data['points'][0]['parent'] == 'All Movies':
         return None
-    if data['points'][0]['parent'] != 'All Movies':
+    if value is not None and data['points'][0]['parent'] != 'All Movies' and data['points'][0]['currentPath'] != '/':
         return data['points'][0]['label']
     return dash.no_update
 
