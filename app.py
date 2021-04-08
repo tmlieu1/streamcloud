@@ -367,7 +367,7 @@ def updateBarChart(fig, platValue):
 # Updates tv shows platform table by dropdown
 @app.callback(
     Output('Data-Table-TV', 'data'),
-    Input('platform-filter-TV', 'value')
+    Input('platform-filter-tv', 'value')
 )
 def filterTVDataByComboBox(platformDropdownValue):
     if platformDropdownValue is None:
@@ -380,7 +380,7 @@ def filterTVDataByComboBox(platformDropdownValue):
 # Update search for tv shows in search page
 @app.callback(
     Output('Data-Table-TV-Search', "data"),
-    Input("search-tv", "value")
+    Input("platform-filter-tv", "value")
 )
 def updateSearchTableTV(query):
     if query is None:
