@@ -3,6 +3,7 @@ import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 import math
 
+
 class TreeMapGraph:
 
     def __init__(self, data):
@@ -32,12 +33,13 @@ class TreeMapGraph:
             # tiling_packing="binary"
             # tiling_squarifyratio=30
         ),
-        layout={
-            'paper_bgcolor': "#272D3F",
-            'font': {
-                'color': '#ffffff'
-            }
-        })
+            layout={
+                'paper_bgcolor': "#272D3F",
+                'font': {
+                    'color': '#ffffff'
+                }
+            })
+
     pass
 
     def getAllGenres(self):
@@ -53,11 +55,14 @@ class TreeMapGraph:
 
         self.allGenres = list(dict.fromkeys(genres))
         print()
+
     pass
 
     def getFigure(self):
         return self.figure
+
     pass
+
     # data = pd.read_csv('./data/movies.csv')
     # genres = []
     # for genreStr in data["Genres"].tolist():
@@ -131,6 +136,7 @@ class TreeMapGraph:
 
         print("Sum of platforms =", summamama, "\nSum of data =", len(self.data), "\nSum of Gen =", sumofGen)
         return datafAllTrees
+
     pass
 
 # print(datafAllTrees)
