@@ -88,15 +88,15 @@ sidebarStyle = {
 }
 
 sidebarLinkStyle = {
-    "color": colors["lightText"], 
-    "font-family": "Roboto", 
+    "color": colors["lightText"],
+    "font-family": "Roboto",
     "font-size": "24px",
     "font-weight": "normal"
 }
 
-dropdownStyle = { 
-	"font-family": "Roboto", 
-	"font-size": "20px",
+dropdownStyle = {
+    "font-family": "Roboto",
+    "font-size": "20px",
     "font-weight": "bold",
     "background-color": "#3b495f",
     "color": "#ABD6FE"
@@ -156,21 +156,22 @@ tabSelectedStyle = {
     "color": colors["lightText"]
 }
 
+
 # =============================================================================#
 # Div Elements                                                                 #
 # =============================================================================#
 
 # Function for building the header
 def buildNavbar():
-	return html.Div([
-            dbc.Navbar([
-                dbc.Row([
-                    dbc.Col(html.Img(src='./assets/streamcloud_logo.png', 
-                        height="30px"), style={"padding-right": "30px"}),
-                ]),
-                html.Span(
-                    dcc.Tabs(id='streamcloud-tabs', value="movies", 
-                        persistence=True, persistence_type="local", children=[
+    return html.Div([
+        dbc.Navbar([
+            dbc.Row([
+                dbc.Col(html.Img(src='./assets/streamcloud_logo.png',
+                                 height="30px"), style={"padding-right": "30px"}),
+            ]),
+            html.Span(
+                dcc.Tabs(id='streamcloud-tabs', value="movies",
+                         persistence=True, persistence_type="local", children=[
                         dcc.Tab(
                             label="Movies",
                             value='movies',
@@ -183,81 +184,83 @@ def buildNavbar():
                             style=tabStyle,
                             selected_style=tabSelectedStyle
                         )
-                    ],style=tabsStyle),
-                    className="ml-auto"
-                )],
-        color='#272D3F'
+                    ], style=tabsStyle),
+                className="ml-auto"
+            )],
+            color='#272D3F'
         )],
         style=navbarStyle
     )
 
+
 # Builds the sidebar, with some hidden divs for callbacks
 def buildSidebar():
-	return html.Div([
-            # Movies navigation
-            dbc.Nav([
-                dbc.NavLink("Home", href="/", active="exact", 
-                    style=sidebarLinkStyle),
-                dbc.NavLink("Search", href="/search", active="exact",
-                    style=sidebarLinkStyle)
-            ],
-                id="navMovies",
-                vertical=True,
-                pills=True,
-                style={"display": "block"}
-            ),
-            # TV Shows navigation
-            dbc.Nav([
-                dbc.NavLink("Home", href="/tv", active="exact",
-                    style=sidebarLinkStyle),
-                dbc.NavLink("Search", href="/tv/search", active="exact",
-                    style=sidebarLinkStyle)
-            ],
-                id="navTV",
-                vertical=True,
-                pills=True,
-                style={"display": "none"}
-            ),
-            # Line & Filters Text
-            html.Hr(style={"border-top": "2px solid", "color": "#3B495F"}),
-            html.H2("Filters", 
-                style={"color": colors["lightText"], 
-                    "font-family": "Roboto", 
-                    "font-size": "24px",
-                    "text-transform": "capitalize"}),
-            # Movies Dropdown
-            dcc.Dropdown(
-                id="platform-filter",
-                options=[
+    return html.Div([
+        # Movies navigation
+        dbc.Nav([
+            dbc.NavLink("Home", href="/", active="exact",
+                        style=sidebarLinkStyle),
+            dbc.NavLink("Search", href="/search", active="exact",
+                        style=sidebarLinkStyle)
+        ],
+            id="navMovies",
+            vertical=True,
+            pills=True,
+            style={"display": "block"}
+        ),
+        # TV Shows navigation
+        dbc.Nav([
+            dbc.NavLink("Home", href="/tv", active="exact",
+                        style=sidebarLinkStyle),
+            dbc.NavLink("Search", href="/tv/search", active="exact",
+                        style=sidebarLinkStyle)
+        ],
+            id="navTV",
+            vertical=True,
+            pills=True,
+            style={"display": "none"}
+        ),
+        # Line & Filters Text
+        html.Hr(style={"border-top": "2px solid", "color": "#3B495F"}),
+        html.H2("Filters",
+                style={"color": colors["lightText"],
+                       "font-family": "Roboto",
+                       "font-size": "24px",
+                       "text-transform": "capitalize"}),
+        # Movies Dropdown
+        dcc.Dropdown(
+            id="platform-filter",
+            options=[
                 {'label': 'Netflix', 'value': 'Netflix'},
                 {'label': 'Prime Video', 'value': 'Prime Video'},
                 {'label': 'Hulu', 'value': 'Hulu'},
                 {'label': 'Disney+', 'value': 'Disney+'}
             ],
-                placeholder= "Select a platform",
-				style = dropdownStyle
-            ),
-            # TV Dropdown
-            dcc.Dropdown(
-                id="platform-filter-tv",
-                options=[
+            placeholder="Select a platform",
+            style=dropdownStyle
+        ),
+        # TV Dropdown
+        dcc.Dropdown(
+            id="platform-filter-tv",
+            options=[
                 {'label': 'Netflix', 'value': 'Netflix'},
                 {'label': 'Prime Video', 'value': 'Prime Video'},
                 {'label': 'Hulu', 'value': 'Hulu'},
                 {'label': 'Disney+', 'value': 'Disney+'}
             ],
-                placeholder= "Select a platform",
-				style = {"display": "none"}
-            ),
-			html.Span(style={"position": "relative", "padding": "1px"}),
-            dcc.Dropdown(
-                id="genre-filter",
-                options=dropDownOptions,
-                placeholder="Select a genre",
-				style = dropdownStyle
-            )], style = sidebarStyle
-		)
+            placeholder="Select a platform",
+            style={"display": "none"}
+        ),
+        html.Span(style={"position": "relative", "padding": "1px"}),
+        dcc.Dropdown(
+            id="genre-filter",
+            options=dropDownOptions,
+            placeholder="Select a genre",
+            style=dropdownStyle
+        )], style=sidebarStyle
+    )
 
+# Builds the home screen for the movies.
 def buildHome():
     return html.Div(id="main-page", style=mainHomeStyle, children=[
         # Overview Text
@@ -283,6 +286,7 @@ def buildHome():
         table.getDataTable()
     ])
 
+# Builds the home page for the TV shows.
 def buildHomeTV():
     return html.Div(id="main-page-tv", style=mainHomeStyle, children=[
         # Overview Text
@@ -307,6 +311,7 @@ def buildHomeTV():
         tableTV.getDataTable()
     ])
 
+# Builds the search page for movies.
 def buildSearch():
     return html.Div(id="search-page", style=mainHomeStyle, children=[
         html.H1(
@@ -319,11 +324,12 @@ def buildSearch():
                 'padding-bottom': '5px'
             }
         ),
-        dbc.Input(id="search-movies", type="search", placeholder="Search...", style = searchbarStyle),
+        dbc.Input(id="search-movies", type="search", placeholder="Search...", style=searchbarStyle),
         html.Span(),
         tableSearch.getDataTable()
     ])
 
+# builds the search page for TV shows.
 def buildSearchTV():
     return html.Div(id="search-page-tv", style=mainHomeStyle, children=[
         html.H1(
@@ -336,10 +342,11 @@ def buildSearchTV():
                 'padding-bottom': '5px'
             }
         ),
-        dbc.Input(id="search-tv", type="search", placeholder="Search...", style = searchbarStyle),
+        dbc.Input(id="search-tv", type="search", placeholder="Search...", style=searchbarStyle),
         html.Span(),
         tableTVSearch.getDataTable()
     ])
+
 
 # =============================================================================#
 # Callbacks                                                                    #
@@ -363,6 +370,7 @@ def updateBarChart(fig, platValue):
     tempfig['data'][0]['marker']['color'] = barChartColors[platValue]
 
     return tempfig
+
 
 # Updates tv shows platform table by dropdown
 @app.callback(
@@ -389,6 +397,7 @@ def updateSearchTableTV(query):
         filteredData = cleanDataTVSearch[cleanDataTVSearch['Title'].str.lower().str.contains(query.lower())]
     return filteredData.to_dict('records')
 
+
 # Update search for movies in search page
 @app.callback(
     Output('Data-Table-Search', "data"),
@@ -400,6 +409,7 @@ def updateSearchTable(query):
     if query is not None:
         filteredData = cleanDataSearch[cleanDataSearch['Title'].str.lower().str.contains(query.lower())]
     return filteredData.to_dict('records')
+
 
 # Sidebar filtering
 @app.callback(
@@ -423,14 +433,14 @@ def updateTreeMap(platformDropdownValue, genreDropdownValue, fig):
         return tempFig
     return dash.no_update
 
+
 # Filtering table data by dropdown
 @app.callback(
     Output('Data-Table', 'data'),
-     Input('platform-filter', 'value'),
-     Input('genre-filter', 'value')
+    Input('platform-filter', 'value'),
+    Input('genre-filter', 'value')
 )
 def filterDataByComboBox(platformDropdownValue, genreDropdownValue):
-
     if (platformDropdownValue is None and genreDropdownValue is None):
         return cleanData.to_dict('records')
 
@@ -444,7 +454,6 @@ def filterDataByComboBox(platformDropdownValue, genreDropdownValue):
         filteredData = cleanData[cleanData['Platform'].str.contains(platformDropdownValue)]
         filteredData = filteredData[filteredData['Genres'].str.contains(genreDropdownValue)]
         return filteredData.to_dict('records')
-
 
 
 # Updating movies platform dropdown by treemap
@@ -464,6 +473,7 @@ def updatePlatformDropDown(data, value):
     #     return None
     return value
 
+
 # Updating movies genre dropdown by treemap
 @app.callback(
     Output('genre-filter', 'value'),
@@ -479,25 +489,27 @@ def updateGenreDropDown(data, value):
         return data['points'][0]['label']
     return dash.no_update
 
+
 # Page changes
 @app.callback(
     Output("main-page", "children"),
     Input("url", "pathname")
 )
 def displayPage(pathname):
-        if pathname == "/":
-            return buildHome().children
-        if pathname == "/tv":
-            return buildHomeTV().children
-        elif pathname == "/search":
-            return buildSearch().children
-        elif pathname == "/tv/search":
-            return buildSearchTV().children
-        return dbc.Jumbotron([
-            html.H1("404: Not found", className="text-danger"),
-            html.Hr,
-            html.P(f"The pathname {pathname} was not recognised..."),
-		])
+    if pathname == "/":
+        return buildHome().children
+    if pathname == "/tv":
+        return buildHomeTV().children
+    elif pathname == "/search":
+        return buildSearch().children
+    elif pathname == "/tv/search":
+        return buildSearchTV().children
+    return dbc.Jumbotron([
+        html.H1("404: Not found", className="text-danger"),
+        html.Hr,
+        html.P(f"The pathname {pathname} was not recognised..."),
+    ])
+
 
 # Adjust filters based on tab
 @app.callback(
@@ -513,7 +525,10 @@ def showHideGenres(selectedTab):
     if selectedTab == "movies":
         return [dropdownStyle, {"display": "none"}, dropdownStyle, "/", {"display": "block"}, {"display": "none"}]
     if selectedTab == "tvshows":
-        return [{"display": "none"}, dropdownStyle, {'display': 'none'}, "/tv", {"display": "none"}, {"display": "block"}]
+        return [{"display": "none"}, dropdownStyle, {'display': 'none'}, "/tv", {"display": "none"},
+                {"display": "block"}]
+
+
 # App Layout and Execution
 app.layout = html.Div(
     children=[
@@ -524,7 +539,8 @@ app.layout = html.Div(
     ],
 )
 
-app.config.suppress_callback_exceptions=True
+app.config.suppress_callback_exceptions = True
 
+# Runs web app.
 if __name__ == "__main__":
     app.run_server(debug=True, dev_tools_ui=False, dev_tools_props_check=False)
