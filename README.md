@@ -1,5 +1,5 @@
-# streamcloud
-A solution to media oversaturation
+# Streamcloud: A solution to media oversaturation
+Streamcloud is a dashboard application built using dash that shows visualizations for movies and tv shows, allowing users to search for the locations of shows or genres they may find interesting.
 
 ## Requirements
 ### pandas
