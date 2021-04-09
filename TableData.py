@@ -1,7 +1,40 @@
 import dash_table
 
 class TableData:
+    """
+    The table data is responsible for creating a table of movies or TV shows.
+
+    Parameters
+    ----------
+    data : Dataframe
+        The dataframe that holds the information from the CSV.
+    movies : bool
+        Determines whether the data is for movies or TV shows.
+    search : bool
+        Determines whether the table should be made for searching.
+
+    Methods
+    -------
+    getDataTable()
+        Returns the data table
+    getCleanData()
+        Returns the data frame that has been pre-processed
+    cleanData()
+        Drops unnecessary columns for the user.
+    groupPlatforms()
+        Bins all the platforms of the data.
+    """
     def __init__(self, data, movies=True, search=True):
+        """
+        Parameters
+        ----------
+        :param data: Dataframe
+            Holds the data from a CSV
+        :param movies: bool
+            Determines whether the data is for movies or TV shows.
+        :param search: bool
+            Determines whether the table should be made for searching.
+        """
         self.data = data
         self.headerName = data.columns.values
         self.cleanData()
@@ -261,15 +294,37 @@ class TableData:
             )
 
     def getDataTable(self):
+        """
+        Returns
+        -------
+        :return: data table
+            returns the created dash data table.
+        """
         return self.dataTable
 
     def getCleanData(self):
+        """
+        Returns
+        -------
+        :return: data frame
+            Returns the pre-processed data frame.
+        """
         return self.data
 
     def cleanData(self):
+        """
+        Returns
+        -------
+        :return: drops unnecessary columns for the user.
+        """
         self.data = self.data.drop(['ID', 'Type'], axis=1)
 
     def groupPlatforms(self):
+        """
+        Returns
+        -------
+        :return: None
+        """
         self.data.loc[self.data["Netflix"] == 1, 'Netflix'] = 'Netflix, '
         self.data.loc[self.data['Netflix'] == 0, 'Netflix'] = ''
 

@@ -4,7 +4,32 @@ from plotly.subplots import make_subplots
 import math
 
 class TreeMapGraph:
+    """
+    TreeMapGraph is responsible for creating the hierarchical treemap of movies and genres.
+
+    Parameters
+    ----------
+    data : Dataframe
+        The dataframe that holds the information from the CSV.
+
+    Methods
+    -------
+    getAllGenres()
+        Gets all genres present in the data
+    createAllGenres()
+        Creates a list of all present genres
+    getFigure()
+        Gets the plotly figure
+    createMovieTreeMap()
+        Creates the hierarchical treemap.
+    """
     def __init__(self, data):
+        """
+        Parameters
+        ----------
+        :param data: Dataframe
+            The dataframe that holds the information from the CSV.
+        """
         self.data = data
         self.allGenres = []
         self.platforms = ['Netflix', 'Hulu', 'Prime Video', 'Disney+']
@@ -34,9 +59,20 @@ class TreeMapGraph:
     pass
 
     def getAllGenres(self):
+        """
+        Returns
+        -------
+        :return: list
+            Returns a list of all generes
+        """
         return self.allGenres
 
     def createAllGenres(self) -> None:
+        """
+        Returns
+        -------
+        :return: None
+        """
         genres = []
         for genreStr in self.data["Genres"].tolist():
             if isinstance(genreStr, str):
@@ -48,10 +84,22 @@ class TreeMapGraph:
     pass
 
     def getFigure(self):
+        """
+        Returns
+        -------
+        :return: plotly figure
+            The treemap figure that was generated.
+        """
         return self.figure
     pass
 
     def createMovieTreemap(self) -> pd.DataFrame:
+        """
+        Returns
+        -------
+        :return: DataFrame
+            The data frame that will hold the hierarchical information of the tree maps.
+        """
         allDfgGenres = {}
         for i, gen in enumerate(self.allGenres):
             self.data['Genres'] = self.data['Genres'].apply(str)
