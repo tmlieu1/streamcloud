@@ -1,7 +1,6 @@
 import dash_table
 
 class TableData:
-
     def __init__(self, data, movies=True, search=True):
         self.data = data
         self.headerName = data.columns.values
