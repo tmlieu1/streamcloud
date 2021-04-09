@@ -159,6 +159,8 @@ tabSelectedStyle = {
 # =============================================================================#
 # Div Elements                                                                 #
 # =============================================================================#
+
+# Function for building the header
 def buildNavbar():
 	return html.Div([
             dbc.Navbar([
@@ -189,13 +191,12 @@ def buildNavbar():
         style=navbarStyle
     )
 
+# Builds the sidebar, with some hidden divs for callbacks
 def buildSidebar():
 	return html.Div([
             # Movies navigation
             dbc.Nav([
                 dbc.NavLink("Home", href="/", active="exact", 
-                    style=sidebarLinkStyle),
-                dbc.NavLink("Analytics", href="/analytics", active="exact", 
                     style=sidebarLinkStyle),
                 dbc.NavLink("Search", href="/search", active="exact",
                     style=sidebarLinkStyle)
@@ -208,8 +209,6 @@ def buildSidebar():
             # TV Shows navigation
             dbc.Nav([
                 dbc.NavLink("Home", href="/tv", active="exact",
-                    style=sidebarLinkStyle),
-                dbc.NavLink("Analytics", href="/tv/analytics", active="exact",
                     style=sidebarLinkStyle),
                 dbc.NavLink("Search", href="/tv/search", active="exact",
                     style=sidebarLinkStyle)
@@ -346,6 +345,7 @@ def buildSearchTV():
 # Callbacks                                                                    #
 # =============================================================================#
 
+# Table to bar chart linking
 @app.callback(
     Output('bar-chart', 'figure'),
     Input('bar-chart', 'figure'),
@@ -367,7 +367,7 @@ def updateBarChart(fig, platValue):
 # Updates tv shows platform table by dropdown
 @app.callback(
     Output('Data-Table-TV', 'data'),
-    Input('platform-filter-TV', 'value')
+    Input('platform-filter-tv', 'value')
 )
 def filterTVDataByComboBox(platformDropdownValue):
     if platformDropdownValue is None:
@@ -431,21 +431,13 @@ def updateTreeMap(platformDropdownValue, genreDropdownValue, fig):
      Input('tree-map', 'clickData')]
 )
 def filterDataByComboBox(platformDropdownValue, genreDropdownValue, data):
-
-    # print(treemaps)
     if data is None and (platformDropdownValue is None and genreDropdownValue is None):
         return cleanData.to_dict('records')
-
     if platformDropdownValue is None and genreDropdownValue is None and (data['points'][0]['currentPath'] == '/' or
                                                                          data['points'][0]['parent'] == 'All Movies'):
         return cleanData.to_dict('records')
-
     if data is not None and data['points'][0]['currentPath'] != '/':
-        # print("The data:", treeData['data'][0]['level'])
-        # if data['points'][0]['currentPath'] == '/':
-        #     return cleanData.to_dict('records')
         idOfData = data['points'][0]['label']
-        # print("label:", idOfData)
         if data['points'][0]['parent'] == 'All Movies':
             filteredData = cleanData[cleanData['Platform'].str.contains(idOfData)]
             return filteredData.to_dict('records')
@@ -453,13 +445,10 @@ def filterDataByComboBox(platformDropdownValue, genreDropdownValue, data):
             filteredData = cleanData[cleanData['Platform'].str.contains(data['points'][0]['parent'])]
             filteredData = filteredData[filteredData['Genres'].str.contains(idOfData)]
             return filteredData.to_dict('records')
-
     if platformDropdownValue is not None and genreDropdownValue is None:
         filteredData = cleanData[cleanData['Platform'].str.contains(platformDropdownValue)]
-
     if genreDropdownValue is not None and platformDropdownValue is None:
         filteredData = cleanData[cleanData['Genres'].str.contains(genreDropdownValue)]
-
     if platformDropdownValue is not None and genreDropdownValue is not None:
         filteredData = cleanData[cleanData['Platform'].str.contains(platformDropdownValue)]
         filteredData = filteredData[filteredData['Genres'].str.contains(genreDropdownValue)]
@@ -497,15 +486,6 @@ def updateGenreDropDown(data, value):
         return data['points'][0]['label']
     return dash.no_update
 
-# @app.callback(
-#     Output('Data-Table', 'data'),
-#     Input('tree-maps', 'clickData')
-# )
-# def filterDataByTreeMap(data):
-#     print("The data:", data)
-#     if data is None:
-#         return cleanData.to_dict('records')
-
 # Page changes
 @app.callback(
     Output("main-page", "children"),
@@ -516,57 +496,6 @@ def displayPage(pathname):
             return buildHome().children
         if pathname == "/tv":
             return buildHomeTV().children
-        elif pathname == "/analytics":
-            return html.P([
-                "⠄⠄⠄⠄⠄⠄⢀⣠⣤⣶⣶⣶⣤⣄⠄⠄⢀⣠⣤⣤⣤⣤⣀⠄⠄⠄⠄⠄⠄⠄", html.Br(),
-                "⠄⠄⠄⠄⢠⣾⣿⣿⣿⣿⠿⠿⢿⣿⣿⡆⣿⣿⣿⣿⣿⣿⣿⣷⡄⠄⠄⠄⠄⠄", html.Br(),
-                "⠄⠄⠄⣴⣿⣿⡟⣩⣵⣶⣾⣿⣷⣶⣮⣅⢛⣫⣭⣭⣭⣭⣭⣭⣛⣂⠄⠄⠄⠄", html.Br(),
-                "⠄⠄⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣶⣭⠛⣿⣿⣿⣿⣿⣿⣿⣿⣦⡀⠄", html.Br(),
-                "⣠⡄⣿⣿⣿⣿⣿⣿⣿⠿⢟⣛⣫⣭⠉⠍⠉⣛⠿⡘⣿⠿⢟⣛⡛⠉⠙⠻⢿⡄", html.Br(),
-                "⣿⣿⣿⣿⣿⣿⣿⣿⣿⣶⣶⣶⣶⣶⣶⣶⣶⣭⣍⠄⣡⣬⣭⣭⣅⣈⣀⣉⣁⠄", html.Br(),
-                "⣿⣿⣿⣿⣿⣿⣿⣿⣶⣭⣛⡻⠿⠿⢿⣿⡿⢛⣥⣾⣿⣿⣿⣿⣿⣿⣿⠿⠋⠄", html.Br(),
-                "⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⠿⣩⣵⣾⣿⣿⣯⣙⠟⣋⣉⣩⣍⡁⠄⠄⠄", html.Br(),
-                "⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⣿⣿⣿⣿⣷⡄⠄⠄", html.Br(),
-                "⣿⣿⣿⣿⣿⣿⡿⢟⣛⣛⣛⣛⠿⠿⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⠿⡀⠄", html.Br(),
-                "⣿⣿⣿⣿⣿⡟⢼⣿⣯⣭⣛⣛⣛⡻⠷⠶⢶⣬⣭⣭⣭⡭⠭⢉⡄⠶⠾⠟⠁⠄", html.Br(),
-                "⣿⣿⣿⣿⣟⠻⣦⣤⣭⣭⣭⣭⣛⣛⡻⠿⠷⠶⢶⣶⠞⣼⡟⡸⣸⡸⠿⠄⠄⠄", html.Br(),
-                "⣛⠿⢿⣿⣿⣿⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠷⡆⣾⠟⡴⣱⢏⡜⠆⠄⠄⠄", html.Br(),
-                "⣭⣙⡒⠦⠭⣭⣛⣛⣛⡻⠿⠿⠟⣛⣛⣛⣛⡋⣶⡜⣟⣸⣠⡿⣸⠇⣧⡀⠄⠄", html.Br(),
-                "⣿⣿⣿⣿⣷⣶⣦⣭⣭⣭⣭⣭⣭⣥⣶⣶⣶⡆⣿⣾⣿⣿⣿⣷⣿⣸⠉⣷⠄⠄"], 
-            style={
-                "color": 'white',
-                "left": 50,
-                "margin-left": "4rem",
-                "margin-right": "3rem",	
-                "font-family": "Roboto", 
-                "font-size": "20px",
-                "font-weight": "bold",
-            })
-        elif pathname == "/tv/analytics":
-            return html.P([
-                "⠄⠄⠄⠄⠄⠄⠄⣠⣴⣶⣿⣿⡿⠶⠄⠄⠄⠄⠐⠒⠒⠲⠶⢄⠄⠄⠄⠄⠄⠄", html.Br(),
-                "⠄⠄⠄⠄⠄⣠⣾⡿⠟⠋⠁⠄⢀⣀⡀⠤⣦⢰⣤⣶⢶⣤⣤⣈⣆⠄⠄⠄⠄⠄", html.Br(),
-                "⠄⠄⠄⠄⢰⠟⠁⠄⢀⣤⣶⣿⡿⠿⣿⣿⣊⡘⠲⣶⣷⣶⠶⠶⠶⠦⠤⡀⠄⠄", html.Br(),
-                "⠄⠔⠊⠁⠁⠄⠄⢾⡿⣟⡯⣖⠯⠽⠿⠛⠛⠭⠽⠊⣲⣬⠽⠟⠛⠛⠭⢵⣂⠄", html.Br(),
-                "⡎⠄⠄⠄⠄⠄⠄⠄⢙⡷⠋⣴⡆⠄⠐⠂⢸⣿⣿⡶⢱⣶⡇⠄⠐⠂⢹⣷⣶⠆", html.Br(),
-                "⡇⠄⠄⠄⠄⣀⣀⡀⠄⣿⡓⠮⣅⣀⣀⣐⣈⣭⠤⢖⣮⣭⣥⣀⣤⣤⣭⡵⠂⠄", html.Br(),
-                "⣤⡀⢠⣾⣿⣿⣿⣿⣷⢻⣿⣿⣶⣶⡶⢖⣢⣴⣿⣿⣟⣛⠿⠿⠟⣛⠉⠄⠄⠄", html.Br(),
-                "⣿⡗⣼⣿⣿⣿⣿⡿⢋⡘⠿⣿⣿⣷⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⡀⠄⠄", html.Br(),
-                "⣿⠱⢿⣿⣿⠿⢛⠰⣞⡛⠷⣬⣙⡛⠻⠿⠿⠿⣿⣿⣿⣿⣿⣿⣿⠿⠛⣓⡀⠄", html.Br(),
-                "⢡⣾⣷⢠⣶⣿⣿⣷⣌⡛⠷⣦⣍⣛⠻⠿⢿⣶⣶⣶⣦⣤⣴⣶⡶⠾⠿⠟⠁⠄", html.Br(),
-                "⣿⡟⣡⣿⣿⣿⣿⣿⣿⣿⣷⣦⣭⣙⡛⠓⠒⠶⠶⠶⠶⠶⠶⠶⠶⠿⠟⠄⠄⠄", html.Br(),
-                "⠿⡐⢬⣛⡻⠿⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⡶⠟⠃⠄⠄⠄⠄⠄⠄", html.Br(),
-                "⣾⣿⣷⣶⣭⣝⣒⣒⠶⠬⠭⠭⠭⠭⠭⠭⠭⣐⣒⣤⣄⡀⠄⠄⠄⠄⠄⠄⠄⠄", html.Br(),
-                "⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣦⠄⠄⠄⠄⠄⠄⠄"],
-            style={
-                "color": 'green',
-                "left": 50,
-                "margin-left": "4rem",
-                "margin-right": "3rem",	
-                "font-family": "Roboto", 
-                "font-size": "20px",
-                "font-weight": "bold",
-            })
         elif pathname == "/search":
             return buildSearch().children
         elif pathname == "/tv/search":
@@ -605,4 +534,4 @@ app.layout = html.Div(
 app.config.suppress_callback_exceptions=True
 
 if __name__ == "__main__":
-    app.run_server(debug=True, dev_tools_ui=True, dev_tools_props_check=True)
+    app.run_server(debug=True, dev_tools_ui=False, dev_tools_props_check=False)
