@@ -380,7 +380,7 @@ def filterTVDataByComboBox(platformDropdownValue):
 # Update search for tv shows in search page
 @app.callback(
     Output('Data-Table-TV-Search', "data"),
-    Input("platform-filter-tv", "value")
+    Input("search-tv", "value")
 )
 def updateSearchTableTV(query):
     if query is None:
