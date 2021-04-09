@@ -8,16 +8,21 @@ class TreeMapGraph:
         self.data = data
         self.allGenres = []
         self.platforms = ['Netflix', 'Hulu', 'Prime Video', 'Disney+']
+        self.platColors = ['#E50914', '#1CE783', '#00A8E1', '#1038CD']
+        self.markerColors = []
         self.createAllGenres()
         self.datafAllTrees = self.createMovieTreemap()
+        for color in self.platColors:
+            self.markerColors.append(color)
+        self.markerColors.append("#002669")
         self.figure = go.Figure(go.Treemap(
             labels=self.datafAllTrees['label'],
             ids=self.datafAllTrees['id'],
             parents=self.datafAllTrees['parent'],
             values=self.datafAllTrees['value'],
             branchvalues='remainder',
-            marker_colorscale='Blues',
-            hovertemplate='<b>%{label} </b> <br> Number Of Movies: %{value}',
+            marker_colors=self.markerColors,
+            hovertemplate='<b>%{label} </b> <br> Number Of Movies: %{value}<extra></extra>',
             maxdepth=2,
         ),
             layout={
@@ -59,6 +64,7 @@ class TreeMapGraph:
             if i > len(self.platforms):
                 continue
             for gen in self.allGenres:
+                self.markerColors.append("#EEEEEE")
                 numberOfGen = len(allDfgGenres[gen][allDfgGenres[gen][platform] == 1])
                 sumofGen += len(allDfgGenres[gen][allDfgGenres[gen][platform] == 1])
                 totalNumOnPlat = len(self.data[self.data[platform] == 1])
