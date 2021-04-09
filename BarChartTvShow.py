@@ -21,7 +21,8 @@ class BarChartTvShow:
             countPlatforms.append(self.data[platform].sum())
 
         fig = go.Figure(data=[
-            go.Bar(x=self.platforms, y=countPlatforms, marker_color=self.platColors
+            go.Bar(x=self.platforms, y=countPlatforms, marker_color=self.platColors,
+                   hovertemplate='<b>%{label} </b> <br> Number Of TV Shows: %{value}<extra></extra>'
                    )],
             layout={
                 'paper_bgcolor': "#272D3F",
