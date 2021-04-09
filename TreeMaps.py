@@ -116,12 +116,10 @@ class TreeMapGraph:
                 # dataFrameTree['color'] = len(allDfgGenres[gen][allDfgGenres[gen][platform] == 1])
                 datafAllTrees = datafAllTrees.append(seriesRow, ignore_index=True)
 
-        # print(datafAllTrees)
-        summamama = 0
+
         # add platform
         for platform in self.platforms:
             numberOfPlat = len(self.data[self.data[platform] == 1])
-            summamama += len(self.data[self.data[platform] == 1])
             seriesRow = pd.Series(dict(label=platform, id=platform, parent='All Movies', value=numberOfPlat,
                                        color=numberOfPlat / totalData))
             # dataFrameTree = pd.DataFrame(columns=['id', 'parent', 'value', 'color'])
@@ -134,7 +132,6 @@ class TreeMapGraph:
         total = pd.Series(dict(label='All Movies', id='All Movies', parent='', value=len(self.data), color=1))
         datafAllTrees = datafAllTrees.append(total, ignore_index=True)
 
-        print("Sum of platforms =", summamama, "\nSum of data =", len(self.data), "\nSum of Gen =", sumofGen)
         return datafAllTrees
 
     pass

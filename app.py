@@ -426,44 +426,44 @@ def updateTreeMap(platformDropdownValue, genreDropdownValue, fig):
 # Filtering table data by dropdown
 @app.callback(
     Output('Data-Table', 'data'),
-    [Input('platform-filter', 'value'),
-     Input('genre-filter', 'value'),
-     Input('tree-map', 'clickData')]
+     Input('platform-filter', 'value'),
+     Input('genre-filter', 'value')
 )
-def filterDataByComboBox(platformDropdownValue, genreDropdownValue, data):
+def filterDataByComboBox(platformDropdownValue, genreDropdownValue):
 
     # print(treemaps)
-    if data is None and (platformDropdownValue is None and genreDropdownValue is None):
+    if (platformDropdownValue is None and genreDropdownValue is None):
         return cleanData.to_dict('records')
 
-    if platformDropdownValue is None and genreDropdownValue is None and (data['points'][0]['currentPath'] == '/' or
-                                                                         data['points'][0]['parent'] == 'All Movies'):
-        return cleanData.to_dict('records')
+    # if platformDropdownValue is None and genreDropdownValue is None and (data['points'][0]['currentPath'] == '/' or
+    #                                                                      data['points'][0]['parent'] == 'All Movies'):
+    #     return cleanData.to_dict('records')
 
-    if data is not None and data['points'][0]['currentPath'] != '/':
         # print("The data:", treeData['data'][0]['level'])
         # if data['points'][0]['currentPath'] == '/':
         #     return cleanData.to_dict('records')
-        idOfData = data['points'][0]['label']
-        # print("label:", idOfData)
-        if data['points'][0]['parent'] == 'All Movies':
-            filteredData = cleanData[cleanData['Platform'].str.contains(idOfData)]
-            return filteredData.to_dict('records')
-        else:
-            filteredData = cleanData[cleanData['Platform'].str.contains(data['points'][0]['parent'])]
-            filteredData = filteredData[filteredData['Genres'].str.contains(idOfData)]
-            return filteredData.to_dict('records')
+
+    # print("label:", idOfData)
 
     if platformDropdownValue is not None and genreDropdownValue is None:
         filteredData = cleanData[cleanData['Platform'].str.contains(platformDropdownValue)]
-
+        return filteredData.to_dict('records')
     if genreDropdownValue is not None and platformDropdownValue is None:
         filteredData = cleanData[cleanData['Genres'].str.contains(genreDropdownValue)]
-
+        return filteredData.to_dict('records')
     if platformDropdownValue is not None and genreDropdownValue is not None:
         filteredData = cleanData[cleanData['Platform'].str.contains(platformDropdownValue)]
         filteredData = filteredData[filteredData['Genres'].str.contains(genreDropdownValue)]
-    return filteredData.to_dict('records')
+        return filteredData.to_dict('records')
+
+    # if data['points'][0]['parent'] == 'All Movies':
+    #     idOfData = data['points'][0]['label']
+    #     filteredData = cleanData[cleanData['Platform'].str.contains(idOfData)]
+    # else:
+    #     idOfData = data['points'][0]['label']
+    #     filteredData = cleanData[cleanData['Platform'].str.contains(data['points'][0]['parent'])]
+    #     filteredData = filteredData[filteredData['Genres'].str.contains(idOfData)]
+    # return filteredData.to_dict('records')
 
 # Updating movies platform dropdown by treemap
 @app.callback(
